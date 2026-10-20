@@ -16,7 +16,9 @@ stat_compute_descriptive(
 
 \item{count_feature}{A logical value indicating whether to compute counts for categorical variables (default is TRUE).}
 
-\item{group_col}{The column name representing the grouping variable (default is "group").}
+\item{group_col}{The column name representing the grouping variable. For a Stat
+object this defaults to the stored group_col slot; for a plain data frame it
+must be supplied.}
 
 \item{max_unique_values}{The maximum number of unique values a variable can have to be considered categorical (default is 5).}
 }
@@ -35,7 +37,9 @@ data("mtcars")
 mtcars$cyl <- factor(mtcars$cyl)
 mtcars$vs  <- factor(mtcars$vs, labels = c("V-shaped", "Straight"))
 # Create a Stat object with "vs" as the grouping variable
-stat_obj <- CreateStatObject(raw.data = mtcars, group_col = "vs")
+info <- data.frame(vs = mtcars$vs, row.names = rownames(mtcars))
+stat_obj <- CreateStatObject(raw.data = subset(mtcars, select = -vs),
+                               info.data = info, group_col = "vs")
 #Compute descriptive statistics for a 'Stat' object
 updated_stat <- stat_compute_descriptive(object = stat_obj, 
 count_feature = TRUE, group_col = "group")

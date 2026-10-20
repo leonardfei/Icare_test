@@ -14,7 +14,22 @@
     group_by(dplyr::across(dplyr::all_of(group_col))) %>%
     dplyr::summarise_all(mean) %>%
     dplyr::select(-dplyr::all_of(group_col))
-  
+
+  # Deep-defence guard: a negative group mean makes log2() undefined, and the
+  # caller above is supposed to have fallen back to "diff". If a negative mean
+  # still reaches here, name the offending feature/group instead of letting
+  # NaN spread silently through the result.
+  neg <- which(means < 0, arr.ind = TRUE)
+  if (nrow(neg) > 0) {
+    offenders <- unique(paste0(rownames(means)[neg[, "row"]],
+                               " (", colnames(means)[neg[, "col"]], ")"))
+    stop("log2ratio requested but the following group means are negative: ",
+         paste(utils::head(offenders, 5), collapse = ", "),
+         if (length(offenders) > 5) paste0(" (+", length(offenders) - 5, " more)"),
+         ". logFC should be computed with logfc_type = 'diff' for this data.",
+         call. = FALSE)
+  }
+
   raw_vals <- unlist(means)
   if (any(raw_vals == 0, na.rm = TRUE)) {
     positive_vals <- raw_vals[raw_vals > 0]
@@ -149,9 +164,21 @@ batch_Wilcoxon <- function(mat,
   logFC     <- as.data.frame(t(logFC))
   logFC$id  <- rownames(logFC)
   colnames(logFC)[1] <- "logFC"
-  
+
   # -- 4. Merge & annotate ---------------------------------------------------
   test_sig$id   <- rownames(test_sig)
+
+  # No feature passed the p threshold: return an empty, well-formed result
+  # rather than crashing in merge(). An empty test_sig makes `shared` empty,
+  # so logFC loses its `id` column and merge() would abort with an opaque
+  # "'by' must specify a uniquely valid column".
+  if (nrow(test_sig) == 0) {
+    warning("No features passed the p < ", p_threshold,
+            " threshold, so there is nothing to report.",
+            call. = FALSE)
+    return(test_sig[0, , drop = FALSE])
+  }
+
   last_test_sig <- merge(test_sig, sd_file,  by = "id")
   last_test_sig <- merge(last_test_sig, logFC, by = "id")
   last_test_sig <- last_test_sig[order(last_test_sig$p), ]
@@ -339,6 +366,18 @@ batch_Wilcoxon_MultiClass <- function(mat,
     temp_logfc_mat <- NULL
     if (!is.null(logfc_mat)) {
       temp_logfc_mat <- logfc_mat
+      # logfc_mat may be a feature-only frame (the norm when it mirrors
+      # clean.data, which is label-free by contract). Borrow the label from
+      # `mat`, which always carries it, instead of subscripting a column that
+      # may not exist.
+      if (!group_col %in% colnames(temp_logfc_mat)) {
+        if (!group_col %in% colnames(mat)) {
+          stop("Group column '", group_col, "' is missing from both 'mat' and ",
+               "'logfc_mat'.", call. = FALSE)
+        }
+        temp_logfc_mat[[group_col]] <- mat[[group_col]][
+          match(rownames(temp_logfc_mat), rownames(mat))]
+      }
       temp_logfc_mat[[group_col]] <- as.character(temp_logfc_mat[[group_col]])
       temp_logfc_mat[[group_col]] <- ifelse(
         temp_logfc_mat[[group_col]] == target_group,
@@ -371,13 +410,29 @@ batch_Wilcoxon_MultiClass <- function(mat,
                     ifelse(deg_result$logFC < -logfc_threshold, "Down", "Stable")),
              "Stable")
     )
-    
+
+    # A 0-row comparison would abort on the scalar assignment below
+    # ("replacement has 1 row, data has 0"); skip it instead.
+    if (nrow(deg_result) == 0) {
+      message("No features passed the p < ", p_threshold, " threshold for target group '",
+              target_group, "'.")
+      next
+    }
+
     deg_result$target_group <- target_group
-    
+
     results_list[[i]] <- deg_result
   }
   
   # Combine all results
+  # Every comparison can be empty (nothing passed the threshold), which makes
+  # results_list an empty list; do.call(rbind, list()) returns NULL and the
+  # ordering below would abort on a NULL.
+  if (length(results_list) == 0) {
+    warning("No comparison produced a significant feature at p < ", p_threshold, ".",
+            call. = FALSE)
+    return(deg_result[0, , drop = FALSE])
+  }
   all_results <- do.call(rbind, results_list)
   rownames(all_results) <- NULL
   
@@ -458,8 +513,20 @@ batch_Wilcoxon_OrderedMultiClass <- function(mat,
     # Prepare logfc_mat if provided
     temp_logfc_mat <- NULL
     if (!is.null(logfc_mat)) {
-      temp_logfc_mat <- logfc_mat[as.character(logfc_mat[[group_col]]) %in% c(group1, group2), ]
-      temp_logfc_mat[[group_col]] <- factor(temp_logfc_mat[[group_col]], levels = c(group1, group2))
+      temp_logfc_mat <- logfc_mat
+      # logfc_mat may be feature-only; borrow the label from `mat`.
+      if (!group_col %in% colnames(temp_logfc_mat)) {
+        if (!group_col %in% colnames(mat)) {
+          stop("Group column '", group_col, "' is missing from both 'mat' and ",
+               "'logfc_mat'.", call. = FALSE)
+        }
+        temp_logfc_mat[[group_col]] <- mat[[group_col]][
+          match(rownames(temp_logfc_mat), rownames(mat))]
+      }
+      temp_logfc_mat <- temp_logfc_mat[
+        as.character(temp_logfc_mat[[group_col]]) %in% c(group1, group2), , drop = FALSE]
+      temp_logfc_mat[[group_col]] <- factor(temp_logfc_mat[[group_col]],
+                                            levels = c(group1, group2))
     }
     
     # Run Wilcoxon test
@@ -485,14 +552,31 @@ batch_Wilcoxon_OrderedMultiClass <- function(mat,
                     ifelse(deg_result$logFC < -logfc_threshold, "Down", "Stable")),
              "Stable")
     )
-    
+
+    # A comparison where nothing passed the threshold yields a 0-row frame;
+    # assigning a scalar to it aborts with "replacement has 1 row, data has 0".
+    # Skip it (the other comparisons still populate the result).
+    if (nrow(deg_result) == 0) {
+      message("No features passed the p < ", p_threshold, " threshold for comparison '",
+              group1, " vs. ", group2, "'.")
+      next
+    }
+
     deg_result$comparison <- paste0(group1, " vs. ", group2)
     deg_result$target_group <- group2
-    
+
     results_list[[i]] <- deg_result
   }
   
   # Combine all results
+  # Every comparison can be empty (nothing passed the threshold), which makes
+  # results_list an empty list; do.call(rbind, list()) returns NULL and the
+  # ordering below would abort on a NULL.
+  if (length(results_list) == 0) {
+    warning("No comparison produced a significant feature at p < ", p_threshold, ".",
+            call. = FALSE)
+    return(deg_result[0, , drop = FALSE])
+  }
   all_results <- do.call(rbind, results_list)
   rownames(all_results) <- NULL
   
@@ -717,14 +801,16 @@ stat_var_feature <- function(object,
   }
   # -- 1. Extract data from Stat object or data frame -----------------------
   if (inherits(object, "Stat")) {
-    
-    group_col <- slot(object, "group_col")
-    if (length(group_col) == 0 || is.null(group_col)) {
+
+    object <- .stat_adopt_legacy(object)
+    group_col <- .stat_group_col(object)
+    if (is.null(group_col)) {
       stop("group_col slot is empty in the Stat object. Please set it when creating the object.")
     }
-    
-    clean_dat <- ExtractCleanData(object)
-    scale_dat <- tryCatch(ExtractScaleData(object), error = function(e) NULL)
+
+    # Feature frames are label-free by contract; the label is joined on below.
+    clean_dat <- .stat_features(object, "clean")
+    scale_dat <- tryCatch(.stat_features(object, "scale"), error = function(e) NULL)
     
     has_clean <- !is.null(clean_dat) && nrow(clean_dat) > 0
     has_scale <- !is.null(scale_dat) && nrow(scale_dat) > 0
@@ -828,10 +914,53 @@ stat_var_feature <- function(object,
   } else {
     stop("Input must be a 'Stat' object or a data frame.")
   }
+
+  # -- 1b. Sanity-check the chosen logFC strategy against the actual data -----
+  # The decision table above infers the strategy from the recorded
+  # normalisation method, but the *content* of logfc_dat is what matters:
+  # log2() of a non-positive group mean is undefined, so a log2ratio computed
+  # on data with negative values yields NaN for every affected feature, with
+  # only a bare "NaNs produced" warning. Whenever negative values are present,
+  # the mean difference is the correct effect size, so falling back to "diff"
+  # is a semantic correction rather than a compromise.
+  # (The data.frame branch already has this guard; this closes the Stat branch,
+  # which had lfc_type hardcoded to "log2ratio" for the clean path.)
+  if (lfc_type == "log2ratio") {
+    num_check <- unlist(logfc_dat[, vapply(logfc_dat, is.numeric, logical(1))])
+    if (any(num_check < 0, na.rm = TRUE)) {
+      warning("logfc data contains negative values (min ", round(min(num_check, na.rm = TRUE), 4),
+              "), so log2ratio is undefined for features whose group mean is not positive. ",
+              "Falling back to 'diff' (mean difference), which is the correct effect size here.",
+              call. = FALSE)
+      lfc_type <- "diff"
+    }
+  }
   
+  # Record the strategy that was ACTUALLY applied, so callers and the saved
+  # object can verify what the logFC column means rather than guessing from the
+  # input arguments. Resolved here because both the label join below and the
+  # lapply() rebuild further down replace logfc_dat with a new object, which
+  # would make identical() comparisons meaningless.
+  logfc_data_src <-
+    if (inherits(object, "Stat")) {
+      if (identical(logfc_dat, clean_dat)) "clean.data"
+      else if (identical(logfc_dat, scale_dat)) "scale.data"
+      else "input data frame"
+    } else "input data frame"
+
   # -- 2. Validate group column ----------------------------------------------
+  # For a Stat object the label is joined from info.data here. This is the only
+  # place the DEG path needs (X, y) side by side; batch_Wilcoxon() and friends
+  # are unchanged and still receive one frame holding both.
+  if (inherits(object, "Stat")) {
+    test_dat  <- .stat_with_group(object, test_dat,  group_col = group_col)
+    logfc_dat <- .stat_with_group(object, logfc_dat, group_col = group_col)
+  }
+
   if (!group_col %in% colnames(test_dat)) {
-    stop("Group column '", group_col, "' not found in the test data.")
+    stop("Group column '", group_col, "' not found in the test data. ",
+         "For a data frame input, include the label column in the frame itself.",
+         call. = FALSE)
   }
   group_values <- test_dat[[group_col]]
   if (any(is.na(group_values)) || length(unique(na.omit(group_values))) < 2) {
@@ -844,7 +973,7 @@ stat_var_feature <- function(object,
   
   cat("Starting batch Wilcoxon test...\n")
   cat("  Test data  : ", nrow(test_dat), "samples x",
-      sum(sapply(test_dat, is.numeric)), "numeric features\n")
+      length(setdiff(colnames(test_dat), group_col)), "features\n")
   cat("  logFC data : ", if (identical(test_dat, logfc_dat)) "same as test data"
       else paste(nrow(logfc_dat), "samples"), "\n")
   cat("  logFC type :", lfc_type, "\n")
@@ -861,7 +990,13 @@ stat_var_feature <- function(object,
     csv_filename = csv_filename,
     use_adjusted_p = use_adjusted_p
   )
-  
+
+  # Record the strategy that was ACTUALLY applied, so callers and the saved
+  # object can verify what the logFC column means rather than guessing from the
+  # input arguments.
+  attr(last_test_sig, "logfc_type")     <- lfc_type
+  attr(last_test_sig, "logfc_data_src") <- logfc_data_src
+
   # -- 4. Store result -------------------------------------------------------
   if (inherits(object, "Stat")) {
     object@var.result <- list(last_test_sig = last_test_sig)
@@ -1185,10 +1320,6 @@ VarFeature_radarchart <- function(object,
   
   if (inherits(object, "Stat")) {
     mat <- ExtractLastTestSig(object)
-    if (is.null(group_col)) {
-      group_col <- slot(object, "group_col")
-    }
-    if (length(group_col) == 0) group_col <- NULL
   } else if (is.data.frame(object)) {
     mat <- object
     if (is.null(group_col)) group_col <- "group"
@@ -1457,6 +1588,13 @@ plot_deg_boxplot <- function(last_test_sig,
   n <- min(n, top_n * 2)
   
   selected_ids <- for_label$id[seq_len(n)]
+  if (length(selected_ids) == 0) {
+    # No feature was called Up or Down at the current thresholds, so there is
+    # nothing to plot. Return early rather than letting `data[, "group"]` collapse
+    # to a vector and fail inside pivot_longer().
+    message("No significant features to plot at the current thresholds; returning NULL.")
+    return(NULL)
+  }
   selected_columns <- c(selected_ids, group_col)
   cat("Selected columns:", selected_columns, "\n")
   missing_columns <- setdiff(selected_columns, colnames(data))
@@ -1465,7 +1603,7 @@ plot_deg_boxplot <- function(last_test_sig,
     stop(paste("Missing columns in data:", paste(missing_columns, collapse = ", ")))
   }
   
-  box_test <- data[, selected_columns]
+  box_test <- data[, selected_columns, drop = FALSE]
   box_test <- tidyr::pivot_longer(box_test, cols = dplyr::all_of(selected_ids), values_to = 'value', names_to = 'id')
   box_test[[group_col]] <- as.factor(box_test[[group_col]])
   
@@ -1574,20 +1712,26 @@ VarFeature_boxplot <- function(object,
   
   # ---- Extract data and group_col ----
   if (inherits(object, "Stat")) {
+    object <- .stat_adopt_legacy(object)
     last_test_sig <- ExtractLastTestSig(object)
-    
+
     # If group_col not provided, read from Stat slot
     if (is.null(group_col)) {
-      group_col <- slot(object, "group_col")
+      group_col <- .stat_group_col(object)
     }
-    if (length(group_col) == 0) group_col <- NULL
-    
+
     cat("Extracting data from 'Stat' object...\n")
-    data <- if (data_type == "clean") ExtractCleanData(object) else ExtractScaleData(object)
-    
-    if (!is.null(group_col) && !group_col %in% colnames(data)) {
-      warning("group_col '", group_col, "' not found in data. Setting to NULL.")
-      group_col <- NULL
+    data <- if (data_type == "clean") .stat_features(object, "clean")
+            else .stat_features(object, "scale")
+
+    # The label lives in info.data, so join it rather than dropping the
+    # grouping altogether.
+    if (!is.null(group_col)) {
+      data <- .stat_with_group(object, data, group_col = group_col)
+      if (!group_col %in% colnames(data)) {
+        stop("Group column '", group_col, "' could not be attached from info.data.",
+             call. = FALSE)
+      }
     }
   } else if (is.data.frame(object)) {
     last_test_sig <- object
@@ -1621,7 +1765,9 @@ VarFeature_boxplot <- function(object,
   print(boxplot)
   
   if (inherits(object, "Stat")) {
-    object@var.result[["boxplot"]] <- boxplot
+    # Assigning NULL into a list DELETES the element, so an empty result used to
+    # leave no trace at all. Store an explicit NULL-valued entry instead.
+    object@var.result["boxplot"] <- list(boxplot)
     return(object)
   }
   
@@ -1845,24 +1991,29 @@ VarFeature_ROC <- function(object,
   
   # ---- Extract data and group_col ----
   if (inherits(object, "Stat")) {
+    object <- .stat_adopt_legacy(object)
     last_test_sig <- ExtractLastTestSig(object)
-    
+
     if (is.null(group_col)) {
-      group_col <- slot(object, "group_col")
+      group_col <- .stat_group_col(object)
     }
-    if (length(group_col) == 0) group_col <- NULL
-    
+
     data <- if (data_type == "clean") {
-      ExtractCleanData(object)
+      .stat_features(object, "clean")
     } else {
-      ExtractScaleData(object)
+      .stat_features(object, "scale")
     }
-    
+
+    # Join the label from info.data instead of failing on a feature-only frame.
+    if (!is.null(group_col)) {
+      data <- .stat_with_group(object, data, group_col = group_col)
+    }
+
     if (!is.null(group_col) && !group_col %in% colnames(data)) {
       stop(paste("Group column", group_col, "not found in data. Available columns:",
                  paste(colnames(data), collapse = ", ")))
     }
-    
+
   } else if (is.list(object) && !is.data.frame(object)) {
     if (is.null(object$last_test_sig) || is.null(object$data)) {
       stop("When passing a list to VarFeature_ROC, it must contain both ",

@@ -9,7 +9,7 @@ plot_numeric_descriptive(
   vars_per_plot = 1,
   save_dir = NULL,
   palette_name = "Zissou1",
-  group_col = "group",
+  group_col = NULL,
   max_unique_values = 5,
   plot_type = "violin",
   save_plots = TRUE,
@@ -59,7 +59,9 @@ It supports custom color specification for groups.
 }
 \examples{
 if (interactive()) {
-  stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+  info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+  stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+                             info.data = info, group_col = "cyl")
   plot_numeric_descriptive(stat, save_plots = FALSE,group_col = "cyl")
 }
 }

@@ -9,7 +9,9 @@
 #' @import methods
 #' @param data A data frame containing the dataset to analyze.
 #' @param count_feature A logical value indicating whether to compute counts for categorical variables (default is TRUE).
-#' @param group_col The column name representing the grouping variable (default is "group").
+#' @param group_col The column name representing the grouping variable. For a Stat
+#'   object this defaults to the stored group_col slot; for a plain data frame it
+#'   must be supplied.
 #' @param max_unique_values The maximum number of unique values a variable can have to be considered categorical (default is 5).
 #'
 #' @returns A list containing the following components:
@@ -38,7 +40,9 @@ compute_descriptive_stats <- function(data,
     count_col <- variable_types$categorical_vars
     cat("Categorical variables identified:", count_col, "\n")
 
-    if (group_col %in% colnames(data)) {
+    # `NULL %in% colnames(data)` returns logical(0), so `if (logical(0))` would
+    # abort with "argument is of length zero" -- guard on NULL explicitly.
+    if (!is.null(group_col) && group_col %in% colnames(data)) {
       data[[group_col]] <- as.factor(data[[group_col]])
       group_counts <- table(data[[group_col]])
       result$Group_Counts <- group_counts
@@ -142,7 +146,9 @@ compute_descriptive_stats <- function(data,
 #' @import methods
 #' @param object An object of class 'Stat' or a data frame containing the dataset to analyze.
 #' @param count_feature A logical value indicating whether to compute counts for categorical variables (default is TRUE).
-#' @param group_col The column name representing the grouping variable (default is "group").
+#' @param group_col The column name representing the grouping variable. For a Stat
+#'   object this defaults to the stored group_col slot; for a plain data frame it
+#'   must be supplied.
 #' @param max_unique_values The maximum number of unique values a variable can have to be considered categorical (default is 5).
 #'
 #' @returns If the input is a 'Stat' object, the function returns the updated 'Stat' object with a new slot `compute.descriptive`
@@ -156,7 +162,9 @@ compute_descriptive_stats <- function(data,
 #' mtcars$cyl <- factor(mtcars$cyl)
 #' mtcars$vs  <- factor(mtcars$vs, labels = c("V-shaped", "Straight"))
 #' # Create a Stat object with "vs" as the grouping variable
-#' stat_obj <- CreateStatObject(raw.data = mtcars, group_col = "vs")
+#' info <- data.frame(vs = mtcars$vs, row.names = rownames(mtcars))
+#' stat_obj <- CreateStatObject(raw.data = subset(mtcars, select = -vs),
+#'                                info.data = info, group_col = "vs")
 #' #Compute descriptive statistics for a 'Stat' object
 #' updated_stat <- stat_compute_descriptive(object = stat_obj, 
 #' count_feature = TRUE, group_col = "group")
@@ -169,13 +177,14 @@ stat_compute_descriptive <- function(
 ) {
 
   if (inherits(object, "Stat")) {
-    data <- slot(object, "clean.data")
-    if (is.null(data) || nrow(data) == 0) {
-      data <- slot(object, "raw.data")
-    } 
-    group_col <- slot(object, "group_col")
-    if (length(group_col) == 0 || !group_col %in% colnames(data)) {
-      group_col <- NULL
+    object <- .stat_adopt_legacy(object)
+    data <- .stat_primary_frame(object)
+    group_col <- .stat_group_col(object)
+    if (!is.null(group_col)) {
+      # Join the label so the worker can report per-group counts. Previously a
+      # label that was not literally named "group" was dropped here, silently
+      # producing ungrouped descriptives.
+      data <- .stat_with_group(object, data, group_col = group_col)
     }
   } else if (is.data.frame(object)) {
     data <- object
@@ -195,7 +204,13 @@ stat_compute_descriptive <- function(
 
   result <- list()
 
-  result <- compute_descriptive_stats(data = data, count_feature = count_feature)
+  # group_col must be forwarded: the worker's own default is the literal string
+  # "group", so a Stat object whose label column has any other name silently got
+  # ungrouped descriptives.
+  result <- compute_descriptive_stats(data = data,
+                                       count_feature = count_feature,
+                                       group_col = group_col,
+                                       max_unique_values = max_unique_values)
 
   if (inherits(object, "Stat")) {
     object@compute.descriptive <- result
@@ -232,7 +247,9 @@ stat_compute_descriptive <- function(
 #' @export
 #' @examples
 #' if (interactive()) {
-#'   stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#'   info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#'   stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                              info.data = info, group_col = "cyl")
 #'   plot_categorical_descriptive(stat, save_plots = FALSE)
 #' }
 plot_categorical_descriptive <- function(
@@ -249,13 +266,11 @@ plot_categorical_descriptive <- function(
   tryCatch({
     # ---- 1. Extract data and group column ----
     if (inherits(object, "Stat")) {
-      data <- slot(object, "clean.data")
-      if (is.null(data) || nrow(data) == 0) {
-        data <- slot(object, "raw.data")
-      }
-      group_col <- slot(object, "group_col")
-      if (length(group_col) == 0 || !group_col %in% colnames(data)) {
-        group_col <- NULL
+      object <- .stat_adopt_legacy(object)
+      data <- .stat_primary_frame(object)
+      group_col <- .stat_group_col(object)
+      if (!is.null(group_col)) {
+        data <- .stat_with_group(object, data, group_col = group_col)
       }
     } else if (is.data.frame(object)) {
       data <- object
@@ -750,14 +765,16 @@ density_ridge_plots <- function(data,
 #'
 #' @examples
 #' if (interactive()) {
-#'   stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#'   info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#'   stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                              info.data = info, group_col = "cyl")
 #'   plot_numeric_descriptive(stat, save_plots = FALSE,group_col = "cyl")
 #' }
 plot_numeric_descriptive <- function(object,
                                      vars_per_plot = 1,
                                      save_dir = NULL,
                                      palette_name = "Zissou1",
-                                     group_col = "group",
+                                     group_col = NULL,
                                      max_unique_values = 5,
                                      plot_type = "violin",
                                      save_plots = TRUE,
@@ -777,15 +794,14 @@ plot_numeric_descriptive <- function(object,
   
   if (inherits(object, "Stat")) {
     cat("Input is an object of class 'Stat'. Extracting data...\n")
-    data <- slot(object, "clean.data")
-    if (is.null(data) || nrow(data) == 0) {
-      data <- slot(object, "raw.data")
-    }
+    object <- .stat_adopt_legacy(object)
+    data <- .stat_primary_frame(object)
     if (is.null(group_col)) {
-      group_col <- object@group_col
+      group_col <- .stat_group_col(object)
     }
-    if (length(group_col) == 0) {
-      group_col <- NULL
+    if (!is.null(group_col)) {
+      data <- .stat_with_group(object, data, group_col = group_col)
+    } else {
       cat("No group_col found in Stat object. Using NULL.\n")
     }
   } else if (is.data.frame(object)) {
@@ -947,7 +963,9 @@ convert_variables <- function(data,
 #' @export
 #'
 #' @examples
-#' stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#' info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#' stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                            info.data = info, group_col = "cyl")
 #' stat <- stat_convert_variables(stat, save_data = FALSE)
 #' str(stat@clean.data)
 stat_convert_variables <- function(object,
@@ -957,14 +975,12 @@ stat_convert_variables <- function(object,
                                    save_data = TRUE,
                                    csv_filename = "clean_data.csv") {
   if (inherits(object, "Stat")) {
-    data <- slot(object, "clean.data")
-    if (is.null(data) || nrow(data) == 0) {
-      data <- slot(object, "raw.data")
-    } 
-    group_col <- slot(object, "group_col")
-    if (length(group_col) == 0) {
-      group_col <- NULL
-    }
+    object <- .stat_adopt_legacy(object)
+    data <- .stat_primary_frame(object)
+    # The feature matrix is label-free by contract, so nothing needs excluding
+    # here. group_col is passed only so that a caller-supplied data.frame (the
+    # else branch) keeps working as before.
+    group_col <- .stat_group_col(object)
   } else if (is.data.frame(object)) {
     data <- object
   } else {
@@ -978,10 +994,16 @@ stat_convert_variables <- function(object,
   variable_types <- diagnose_variable_type(data, group_col = group_col, max_unique_values = max_unique_values)
 
   row_names <- rownames(data)
-  data <- convert_variables(data, 
+  # group_col must be forwarded: without it the worker cannot tell the label
+  # column from an ordinary variable, and since diagnose_variable_type() already
+  # skipped it by name it is absent from variable_types$categorical_vars -- so it
+  # falls into the worker's `else` branch and gets as.numeric()'d. For character
+  # labels that silently turns the whole group column into NA.
+  data <- convert_variables(data,
                             variable_types,
                             save_dir =save_dir,
                             save_data = save_data,
+                            group_col = group_col,
                             csv_filename = csv_filename)
   rownames(data) <- row_names
 
@@ -990,6 +1012,7 @@ stat_convert_variables <- function(object,
     cat("Updating 'Stat' object...\n")
     cat("The 'Stat' object has been updated with the following slots:\n")
     cat("- 'clean.data' slot updated.\n")
+    .stat_validate(object)
 
     return(object)
   }
@@ -1026,8 +1049,9 @@ one_hot_encode <- function(data,
 ) {
   if (!is.data.frame(data)) stop("Input must be a data frame")
 
+  # Under the label-location contract a feature frame normally carries no label
+  # column at all, so this normalization is the expected path, not a warning.
   if (length(group_col) == 0 || !is.character(group_col) || !(group_col %in% colnames(data))) {
-    cat("Group column is not valid, setting to NULL.\n")
     group_col <- NULL
   }
 
@@ -1096,7 +1120,9 @@ one_hot_encode <- function(data,
 #' @export
 #'
 #' @examples
-#' stat <- CreateStatObject(clean.data = mtcars, group_col = "cyl")
+#' info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#' stat <- CreateStatObject(clean.data = subset(mtcars, select = -cyl),
+#'                            info.data = info, group_col = "cyl")
 #' stat <- stat_onehot_encode(stat, save_data = FALSE,group_col = "cyl")
 #' head(stat@clean.data)
 stat_onehot_encode <- function(object, 
@@ -1109,13 +1135,11 @@ stat_onehot_encode <- function(object,
   cat("Input object class:", class(object), "\n")
 
   if (inherits(object, "Stat")) {
-    data <- slot(object, "clean.data")
-    group_col <- slot(object, "group_col")
-
-    if (length(group_col) == 0 || is.null(group_col)) {
-      cat("Group column is not valid, setting to NULL.\n")
-      group_col <- NULL
-    }
+    object <- .stat_adopt_legacy(object)
+    data <- .stat_primary_frame(object)
+    # No group column exists in the feature matrix, so one_hot_encode() has
+    # nothing to skip and nothing to move to the last column.
+    group_col <- .stat_group_col(object)
   } else if (is.data.frame(object)) {
     data <- object
   } else {

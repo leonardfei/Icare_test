@@ -8,6 +8,7 @@ CreateSubtypingObject(
   clean.data = NULL,
   info.data = data.frame(),
   scale.data = data.frame(),
+  group_col = NULL,
   Optimal.cluster = NULL,
   cluster.results = NULL,
   visualization.results = NULL,
@@ -24,6 +25,8 @@ CreateSubtypingObject(
 \item{info.data}{Info data.}
 
 \item{scale.data}{Scale data.}
+
+\item{group_col}{Name of the group/label column in `info.data`.}
 
 \item{Optimal.cluster}{Optimal cluster.}
 

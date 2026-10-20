@@ -191,7 +191,9 @@ plot_missing_data <- function(data,
 #'
 #' @examples
 #' if (interactive()) {
-#'   stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#'   info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#'   stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                              info.data = info, group_col = "cyl")
 #'   state_plot_missing_data(stat, save_plots = FALSE)
 #' }
 state_plot_missing_data <- function(
@@ -258,7 +260,9 @@ state_plot_missing_data <- function(
 #' @export
 #'
 #' @examples
-#' stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#' info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#' stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                            info.data = info, group_col = "cyl")
 #' raw <- ExtractRawData(stat)
 #' head(raw)
 ExtractRawData <- function(object) {
@@ -412,7 +416,9 @@ diagnose_variable_type <- function(data,
 #' @export
 #'
 #' @examples
-#' stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#' info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#' stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                            info.data = info, group_col = "cyl")
 #' stat <- stat_diagnose_variable_type(stat)
 #' print(stat@variable.types)
 stat_diagnose_variable_type <- function(object,
@@ -612,7 +618,9 @@ gaze_analysis <- function(data,
 #' mtcars$vs  <- factor(mtcars$vs, labels = c("V-shaped", "Straight"))
 #' 
 #' # Create a Stat object with "vs" as the grouping variable
-#' stat_obj <- CreateStatObject(raw.data = mtcars, group_col = "vs")
+#' info <- data.frame(vs = mtcars$vs, row.names = rownames(mtcars))
+#' stat_obj <- CreateStatObject(raw.data = subset(mtcars, select = -vs),
+#'                                info.data = info, group_col = "vs")
 #' 
 #' # --- Example 1: Basic usage with 2 groups (automatic formula) ---
 #' stat_obj <- stat_gaze_analysis(stat_obj,
@@ -675,11 +683,15 @@ stat_gaze_analysis <- function(object,
   
   # ---- 1. Extract data ----
   if (inherits(object, "Stat")) {
-    data <- slot(object, "clean.data")
-    if (is.null(data) || nrow(data) == 0) {
-      data <- slot(object, "raw.data")
-    }
-    group_col <- slot(object, "group_col")
+    object <- .stat_adopt_legacy(object)
+    # Features come from the matrix; the label is joined from info.data. A
+    # missing label is an error, never a silent fall back to an ungrouped table.
+    data <- .stat_primary_frame(object)
+    group_col <- .stat_group_col(object)
+    if (is.null(group_col))
+      stop("group_col slot is empty in the Stat object, so the baseline table ",
+           "cannot be split by group.", call. = FALSE)
+    data <- .stat_with_group(object, data, group_col = group_col)
   } else if (is.data.frame(object)) {
     data <- object
   } else {
@@ -691,7 +703,7 @@ stat_gaze_analysis <- function(object,
   
   # ---- 2. Sanitize grouping column ----
   if (!is.null(group_col) && !group_col %in% colnames(data))
-    group_col <- NULL
+    stop("Group column '", group_col, "' not found in the data. ", call. = FALSE)
   
   # ---- 3. Drop problematic columns ----
   # (a) Remove all-NA columns

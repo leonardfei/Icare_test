@@ -57,11 +57,54 @@
 }
 
 .object_info_data <- function(object) {
-  if (inherits(object, "Train_Model")) return(data.frame())
+  # Train_Model now carries info.data too, so a round trip back to Stat no
+  # longer drops the label and the clinical variables.
   tryCatch(slot(object, "info.data"), error = function(e) data.frame())
 }
 
 ## -- 1. ConvertObject ---------------------------------------------------------
+#' Split an outcome column out of a modelling frame into a metadata frame
+#'
+#' Train_Model's `clean.df` legitimately holds the outcome (caret fits
+#' `group_col ~ .` there), whereas Stat's `clean.data` must not. Any conversion
+#' from Train_Model into Stat / Subtyping / PrognosiX therefore has to move the
+#' column rather than copy it, otherwise `CreateStatObject()` rejects the frame.
+#'
+#' @param df Feature frame that may contain `grp`.
+#' @param info Existing metadata frame (may be empty).
+#' @param grp Outcome column name, or NULL.
+#' @return A list with `data` (label-free) and `info` (label relocated).
+#' @keywords internal
+.object_split_label <- function(df, info, grp) {
+  if (is.null(df) || !is.data.frame(df) || nrow(df) == 0) {
+    return(list(data = df, info = info))
+  }
+  if (is.null(info) || !is.data.frame(info)) info <- data.frame()
+  if (is.null(grp) || !grp %in% colnames(df)) {
+    return(list(data = df, info = info))
+  }
+
+  if (nrow(info) == 0) {
+    info <- data.frame(row.names = rownames(df))
+  } else {
+    missing_rows <- setdiff(rownames(df), rownames(info))
+    if (length(missing_rows) > 0) {
+      # Fabricating rows here would produce all-NA labels that no validity
+      # check catches, so this fails the way .stat_labels() does.
+      stop("Cannot split out the label '", grp, "': info.data does not cover ",
+           length(missing_rows), " sample(s) of the frame (e.g. ",
+           paste(head(missing_rows, 3), collapse = ", "), ").",
+           call. = FALSE)
+    }
+    info <- info[rownames(df), , drop = FALSE]
+    rownames(info) <- rownames(df)
+  }
+  if (!grp %in% colnames(info)) info[[grp]] <- df[[grp]]
+
+  list(data = df[, colnames(df) != grp, drop = FALSE], info = info)
+}
+
+
 #' Convert any package object to another class
 #'
 #' A single entry-point for all cross-class conversions.
@@ -94,13 +137,16 @@
 #' set.seed(1)
 #' demo_df <- data.frame(
 #'   id    = paste0("S", 1:60),
-#'   group = rep(c(0, 1), each = 30),
 #'   feat1 = c(rnorm(30, 5, 1), rnorm(30, 8, 1)),
 #'   feat2 = c(rnorm(30, 2, 0.5), rnorm(30, 4, 0.5)),
 #'   feat3 = rnorm(60, 10, 2),
 #'   feat4 = c(rnorm(30, 1, 0.3), rnorm(30, 3, 0.3))
 #' )
-#' stat_obj <- CreateStatObject(raw.data = demo_df, clean.data = demo_df,
+#' rownames(demo_df) <- demo_df$id
+#' demo_info <- data.frame(group = rep(c(0, 1), each = 30),
+#'                         row.names = demo_df$id)
+#' stat_obj <- CreateStatObject(raw.data = demo_df[, -1], clean.data = demo_df[, -1],
+#'                              info.data = demo_info,
 #'                              group_col = "group", na.action = "allow")
 #' sub_obj <- ConvertObject(stat_obj, to = "Subtyping")
 #' class(sub_obj)
@@ -128,6 +174,7 @@ ConvertObject <- function(object,
   # -- helper: build a minimal Stat from any object ---------------------
   # Track conversion chain to prevent infinite recursion
   .to_stat <- function(obj, grp = group_col, visited = NULL) {
+
     # Initialize visited set if not provided
     if (is.null(visited)) {
       visited <- character()
@@ -144,9 +191,11 @@ ConvertObject <- function(object,
     cd   <- .object_clean_data(obj)
     info <- .object_info_data(obj)
     if (is.null(grp) && .hasSlot(obj, "group_col")) grp <- obj@group_col
-    CreateStatObject(clean.data = cd,
-                     info.data  = if (nrow(info) > 0) info else data.frame(),
-                     group_col  = if (!is.null(grp)) grp else "group")
+    # Train_Model legitimately keeps the outcome in clean.df; Stat must not.
+    split <- .object_split_label(cd, info, grp)
+    CreateStatObject(clean.data = split$data,
+                     info.data  = split$info,
+                     group_col  = grp)
   }
   
   # -- dispatch table ----------------------------------------------------
@@ -188,31 +237,62 @@ ConvertObject <- function(object,
       # -- Move group_col from clean.data -> info.data ------------------
       # If the group column is present in clean.data, migrate it to info.data
       # and strip it from the numeric feature matrices (clean.data, scale.data).
+      # NOTE: CreateSubtypingObject renames info.data with
+      # janitor::make_clean_names(), a DIFFERENT rule from the
+      # modify_column_names() that ran in CreateStatObject -- so the resolved
+      # grp_col (e.g. "Diag_Group") no longer matches the stored column
+      # (e.g. "diag_group"). Re-resolve against the ACTUAL info.data names, or
+      # the label becomes unreadable downstream (stratify_by, PlotPCA, DEG all
+      # look the name up there).
+      if (!is.null(grp_col) && grp_col %in% colnames(sub_obj@info.data)) {
+        # Name already resolves: nothing to do.
+      } else if (!is.null(grp_col) && length(grp_col) == 1 && nzchar(grp_col)) {
+        # The label travelled inside info.data under a janitor-mangled name;
+        # find it by matching against the mangled form of grp_col, falling back
+        # to a case/punctuation-insensitive match.
+        mangled <- janitor::make_clean_names(grp_col)
+        new_grp_col <- if (mangled %in% colnames(sub_obj@info.data)) {
+          mangled
+        } else {
+          norm <- function(x) tolower(gsub("[^[:alnum:]]", "", x))
+          hit <- which(norm(colnames(sub_obj@info.data)) == norm(grp_col))
+          if (length(hit) == 1) colnames(sub_obj@info.data)[hit] else grp_col
+        }
+        if (!identical(new_grp_col, grp_col)) {
+          message("Stat -> Subtyping: label column '", grp_col,
+                  "' is stored as '", new_grp_col,
+                  "' in info.data (Subtyping normalises names differently).")
+          grp_col <- new_grp_col
+        }
+      }
+
+      sub_obj@group_col <- grp_col
+
       if (!is.null(grp_values) && grp_col %in% colnames(sub_obj@clean.data)) {
-        
+
         # Initialise info.data if it is empty, preserving sample row names
         if (is.null(sub_obj@info.data) || nrow(sub_obj@info.data) == 0) {
           sub_obj@info.data <- data.frame(row.names = rownames(sub_obj@clean.data))
         }
-        
+
         # Write original (non-numeric-coded) group labels into info.data
         sub_obj@info.data[[grp_col]] <- grp_values
-        
+
         # Remove group column from clean.data
         sub_obj@clean.data <- sub_obj@clean.data[
           , colnames(sub_obj@clean.data) != grp_col, drop = FALSE]
-        
+
         # Remove group column from scale.data if present
         if (ncol(sub_obj@scale.data) > 0 &&
             grp_col %in% colnames(sub_obj@scale.data)) {
           sub_obj@scale.data <- sub_obj@scale.data[
             , colnames(sub_obj@scale.data) != grp_col, drop = FALSE]
         }
-        
+
         message("Stat \u2192 Subtyping: column '", grp_col,
                 "' moved from clean.data to info.data.")
       }
-      
+
       sub_obj
     },
     
@@ -228,15 +308,22 @@ ConvertObject <- function(object,
     },
     
     Subtyping_to_PrognosiX = {
+      # Propagate the label name: prognosis_02_framework.R reads @group_col to
+      # exclude the label from the candidate-feature scan, and a NULL there
+      # makes the label a Cox feature.
+      grp <- if (!is.null(group_col)) group_col else tryCatch(object@group_col, error = function(e) NULL)
       CreatePrognosiXObject(object     = object,
+                            group_col  = grp,
                             time_col   = time_col,
                             status_col = status_col)
     },
     
     Subtyping_to_Train_Model = {
       stat_tmp <- .to_stat(object, group_col)
-      grp <- if (!is.null(group_col)) group_col else "group"
-      CreateModelObject(object = stat_tmp, group_col = grp)
+      # .to_stat() already resolved the label name (slot, or group_col arg);
+      # hardcoding "group" here discarded it and broke every label that is not
+      # literally named "group".
+      CreateModelObject(object = stat_tmp, group_col = stat_tmp@group_col)
     },
     
     ## -- PrognosiX -> * ------------------------------------------------
@@ -250,26 +337,32 @@ ConvertObject <- function(object,
     
     PrognosiX_to_Train_Model = {
       stat_tmp <- .to_stat(object, group_col)
-      grp <- if (!is.null(group_col)) group_col else "group"
-      CreateModelObject(object = stat_tmp, group_col = grp)
+      CreateModelObject(object = stat_tmp, group_col = stat_tmp@group_col)
     },
     
     ## -- Train_Model -> * ----------------------------------------------
     Train_Model_to_Stat = {
       grp <- if (!is.null(group_col)) group_col else object@group_col
-      CreateStatObject(clean.data = object@clean.df, group_col = grp)
+      split <- .object_split_label(object@clean.df, .object_info_data(object), grp)
+      CreateStatObject(clean.data = split$data, info.data = split$info,
+                       group_col = grp)
     },
-    
+
     Train_Model_to_Subtyping = {
-      stat_tmp <- CreateStatObject(clean.data = object@clean.df,
-                                   group_col  = object@group_col)
+      grp <- if (!is.null(group_col)) group_col else object@group_col
+      split <- .object_split_label(object@clean.df, .object_info_data(object), grp)
+      stat_tmp <- CreateStatObject(clean.data = split$data, info.data = split$info,
+                                   group_col = grp)
       CreateSubtypingObject(object = stat_tmp)
     },
-    
+
     Train_Model_to_PrognosiX = {
-      stat_tmp <- CreateStatObject(clean.data = object@clean.df,
-                                   group_col  = object@group_col)
+      grp <- if (!is.null(group_col)) group_col else object@group_col
+      split <- .object_split_label(object@clean.df, .object_info_data(object), grp)
+      stat_tmp <- CreateStatObject(clean.data = split$data, info.data = split$info,
+                                   group_col = grp)
       CreatePrognosiXObject(object     = stat_tmp,
+                            group_col  = grp,
                             time_col   = time_col,
                             status_col = status_col)
     },
@@ -334,8 +427,15 @@ SubsetObject <- function(object, samples = NULL, features = NULL) {
   }
   
   else if (inherits(object, "Train_Model")) {
+    # clean.df carries the outcome, which caret needs; a feature-only subset
+    # would produce an invalid object that fails later with a cryptic error.
+    if (!is.null(features)) {
+      gc <- object@group_col
+      features <- union(features, if (!is.null(gc)) as.character(gc))
+    }
     object@data.df  <- .subset_df(object@data.df,  samples, features)
     object@clean.df <- .subset_df(object@clean.df, samples, features)
+    object@info.data <- .subset_df(object@info.data, samples, NULL)
     # invalidate downstream slots
     object@split.data        <- list()
     object@split.scale.data  <- list()
@@ -539,11 +639,20 @@ DownsampleObject <- function(object, n, per_group = FALSE,
     src_df  <- if (nrow(meta_df) > 0 && grp_col %in% colnames(meta_df)) meta_df else cd
     if (!grp_col %in% colnames(src_df))
       stop("Column '", grp_col, "' not found.")
-    
-    groups <- src_df[[grp_col]]
-    levels_vec <- unique(groups)
+
+    # Compare by ROW NAME, not by position. `all_samples` comes from clean.data
+    # while `groups` may come from info.data, and nothing guarantees the two
+    # frames share a row order -- a positional match would then silently sample
+    # the wrong samples, with no error to notice.
+    groups <- src_df[all_samples, grp_col]
+    if (anyNA(groups))
+      stop("Cannot downsample per group: ",
+           sum(is.na(groups)), " of ", length(all_samples),
+           " samples in clean.data have no row in info.data.", call. = FALSE)
+
+    levels_vec <- unique(as.character(groups))
     kept <- unlist(lapply(levels_vec, function(lv) {
-      ids <- all_samples[groups == lv]
+      ids <- all_samples[as.character(groups) == lv]
       sample(ids, min(n, length(ids)))
     }))
   }
@@ -642,6 +751,26 @@ RenameFeatures <- function(object, old, new) {
   .check_class(object, c("Stat", "Train_Model", "Subtyping", "PrognosiX"))
   if (length(old) != length(new))
     stop("'old' and 'new' must be the same length.")
+
+  # Renaming must not silently break the group_col reference: if the label
+  # column itself is renamed the slot has to follow, and a new name that
+  # collides with an existing column would otherwise create duplicates.
+  gc <- tryCatch(object@group_col, error = function(e) NULL)
+  gc <- if (!is.null(gc) && length(gc) == 1) as.character(gc) else NULL
+  renamed_label <- old == gc & !is.na(old)
+  if (any(renamed_label)) {
+    new_label <- new[renamed_label][1]
+    object@group_col <- new_label
+  } else {
+    all_cols <- c(
+      if (.hasSlot(object, "clean.data")) colnames(object@clean.data),
+      if (.hasSlot(object, "clean.df"))   colnames(object@clean.df),
+      if (.hasSlot(object, "info.data"))  colnames(object@info.data))
+    conflict <- new[new %in% all_cols]
+    if (length(conflict) > 0)
+      stop("New feature name(s) already exist: ",
+           paste(unique(conflict), collapse = ", "), call. = FALSE)
+  }
   
   rename_cols <- function(df, old, new) {
     if (is.null(df) || nrow(df) == 0) return(df)
@@ -667,6 +796,11 @@ RenameFeatures <- function(object, old, new) {
     object@data.df  <- rename_cols(object@data.df,  old, new)
     object@clean.df <- rename_cols(object@clean.df, old, new)
   }
+  # The label lives in info.data for Stat/Subtyping/PrognosiX (and clinical
+  # metadata generally), so renames must reach it too or the group_col reference
+  # dangles after a label rename.
+  if (.hasSlot(object, "info.data"))
+    object@info.data <- rename_cols(object@info.data, old, new)
   
   cat("RenameFeatures: renamed", sum(old %in% colnames(.object_clean_data(object)) |
                                        new %in% colnames(.object_clean_data(object))),
@@ -779,9 +913,12 @@ MergeObjects <- function(x, y = NULL) {
                    },
                    
                    PrognosiX = {
+                     # group_col must ride along, or the merged object loses the
+                     # label reference entirely (gc = NULL).
                      obj <- CreatePrognosiXObject(
                        clean.data = merged_clean,
                        info.data  = merged_info,
+                       group_col  = tryCatch(obj_list[[1]]@group_col, error = function(e) NULL),
                        time_col   = obj_list[[1]]@time_col,
                        status_col = obj_list[[1]]@status_col
                      )
@@ -792,6 +929,11 @@ MergeObjects <- function(x, y = NULL) {
                    Train_Model = {
                      obj <- CreateModelObject(data      = merged_clean,
                                               group_col = obj_list[[1]]@group_col)
+                     # CreateModelObject(data=...) starts from an empty
+                     # info.data, so the merged metadata was silently dropped;
+                     # re-attach it (rownames already made unique above, matching
+                     # the clean-frame merge behaviour).
+                     obj@info.data <- merged_info[rownames(obj@clean.df), , drop = FALSE]
                      message("Train_Model merge: split / model slots reset.")
                      obj
                    }
@@ -849,6 +991,9 @@ InspectObject <- function(object) {
   else if (inherits(object, "Train_Model")) {
     cat("  data.df            :", .dim_str(object@data.df), "\n")
     cat("  clean.df           :", .dim_str(object@clean.df), "\n")
+    # info.data was added to this class together with the label-location
+    # contract; without it there is no way to see whether metadata survived.
+    cat("  info.data          :", .dim_str(object@info.data), "\n")
     cat("  group_col          :", as.character(object@group_col), "\n")
     cat("  split.data         :", .list_str(object@split.data), "\n")
     cat("  feature.selection  :", .list_str(object@feature.selection), "\n")
@@ -875,6 +1020,9 @@ InspectObject <- function(object) {
     cat("  info.data          :", .dim_str(object@info.data), "\n")
     cat("  survival.data      :", .dim_str(object@survival.data), "\n")
     cat("  sub.data           :", .dim_str(object@sub.data), "\n")
+    # group_col is the label reference introduced with the label-location
+    # contract; showing it makes a dangling reference visible.
+    cat("  group_col          :", as.character(object@group_col), "\n")
     cat("  time_col           :", as.character(object@time_col), "\n")
     cat("  status_col         :", as.character(object@status_col), "\n")
     cat("  baseline.table     :",

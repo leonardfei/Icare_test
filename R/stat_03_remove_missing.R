@@ -82,7 +82,9 @@ remove_high_missing <- function(data,
 #' @export
 #' 
 #' @examples
-#' stat <- CreateStatObject(raw.data = mtcars, group_col = "cyl")
+#' info <- data.frame(cyl = mtcars$cyl, row.names = rownames(mtcars))
+#' stat <- CreateStatObject(raw.data = subset(mtcars, select = -cyl),
+#'                            info.data = info, group_col = "cyl")
 #' stat <- stat_miss_remove(stat, miss_threshold = 20, save_data = FALSE)
 #' print(dim(stat@clean.data))
 stat_miss_remove <- function(object, 
@@ -121,6 +123,7 @@ stat_miss_remove <- function(object,
     object@process.info[["missing_removal"]]<-clean_drop_data
     cat("- 'clean.data' slot updated.\n")
     cat("- 'process.info' slot updated.\n")
+    .stat_validate(object)
     return(object)
   } else {
     return(clean_drop_data)
