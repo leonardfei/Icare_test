@@ -906,8 +906,8 @@ E90 (90th pct abs error):        0.4184
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the PH assumption, a warning is shown.</span></span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>nom <span class="ot">&lt;-</span> <span class="fu">surv_generate_nomogram</span>(train_task,</span>
 <span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>                              <span class="at">selected_features =</span> <span class="fu">head</span>(selected_feats, <span class="dv">5</span>),</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_points =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">180</span>, <span class="dv">365</span>),</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_unit =</span> <span class="st">"days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_points =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">25</span>, <span class="dv">38</span>),</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_unit =</span> <span class="st">"months"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -2244,8 +2244,8 @@ GLOBAL                   7.05073  5 0.217
 <span id="cb62-385"><a href="#cb62-385" aria-hidden="true" tabindex="-1"></a><span class="co"># the PH assumption, a warning is shown.</span></span>
 <span id="cb62-386"><a href="#cb62-386" aria-hidden="true" tabindex="-1"></a>nom <span class="ot">&lt;-</span> <span class="fu">surv_generate_nomogram</span>(train_task,</span>
 <span id="cb62-387"><a href="#cb62-387" aria-hidden="true" tabindex="-1"></a>                              <span class="at">selected_features =</span> <span class="fu">head</span>(selected_feats, <span class="dv">5</span>),</span>
-<span id="cb62-388"><a href="#cb62-388" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_points =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">180</span>, <span class="dv">365</span>),</span>
-<span id="cb62-389"><a href="#cb62-389" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_unit =</span> <span class="st">"days"</span>)</span>
+<span id="cb62-388"><a href="#cb62-388" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_points =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">25</span>, <span class="dv">38</span>),</span>
+<span id="cb62-389"><a href="#cb62-389" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_unit =</span> <span class="st">"months"</span>)</span>
 <span id="cb62-390"><a href="#cb62-390" aria-hidden="true" tabindex="-1"></a><span class="co"># Nomogram is drawn; optionally save via pdf().</span></span>
 <span id="cb62-391"><a href="#cb62-391" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-392"><a href="#cb62-392" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
