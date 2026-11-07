@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-da04b06e5c4a19ee0b37a13fe2d2a80e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4c5e755a3bfe43f3706dcc37cc2065fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -733,7 +733,7 @@ RFE selected: 20 features</code></pre>
 Running GA: 2 iters, popSize 5, cv...
 + final GA
  1 0.9028436 (15)
- 2 0.9028436-&gt;0.8317536 (15-&gt;16, 47.6%)
+ 2 0.9028436-&gt;0.8364929 (15-&gt;23, 52.0%)
 + final model
 GA selected: 15 features</code></pre>
 </div>
@@ -1211,7 +1211,7 @@ Univariate glm: Monocytes_count                          AUC = 0.5668
 Univariate glm: Basophil_count                           AUC = 0.4800
 Univariate glm: Mean_platelet_volume                     AUC = 0.6713
 Univariate glm: PCT                                      AUC = 0.6322
-Univariate glm: Platelet_volume_distribution_width       AUC = 0.8672
+Univariate glm: Platelet_volume_distribution_width       AUC = 0.8673
 Univariate glm: sex                                      AUC = 0.5079
 Combined glm (7 features): AUC = 0.9379</code></pre>
 </div>
@@ -7350,7 +7350,7 @@ Threshold External Model: 0.3758</code></pre>
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb205"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IDI</span></span>
 <span id="cb205-2"><a href="#cb205-2" aria-hidden="true" tabindex="-1"></a>idi <span class="ot">&lt;-</span> <span class="fu">PlotIDICurve</span>(true_labels, ref_prob, new_prob, <span class="at">positive =</span> positive, </span>
-<span id="cb205-3"><a href="#cb205-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir)</span>
+<span id="cb205-3"><a href="#cb205-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir,<span class="at">conf_int =</span> T)</span>
 <span id="cb205-4"><a href="#cb205-4" aria-hidden="true" tabindex="-1"></a>idi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -7365,13 +7365,19 @@ $ip
 [1] 0.08520462
 
 $idi
-[1] 0.09388852</code></pre>
+[1] 0.09388852
+
+$ci
+  metric    estimate       lower      upper
+1     IS 0.008683901 -0.04029481 0.06504136
+2     IP 0.085204623  0.05348813 0.11644240
+3    IDI 0.093888523  0.03678714 0.15753561</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb208"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb208-1"><a href="#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NRI calculation</span></span>
 <span id="cb208-2"><a href="#cb208-2" aria-hidden="true" tabindex="-1"></a>nri <span class="ot">&lt;-</span> <span class="fu">CalculateCategoryNRI</span>(true_labels, ref_prob, new_prob, </span>
-<span id="cb208-3"><a href="#cb208-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>))</span>
+<span id="cb208-3"><a href="#cb208-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>),<span class="at">conf_int =</span> T)</span>
 <span id="cb208-4"><a href="#cb208-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Export numeric results</span></span>
 <span id="cb208-5"><a href="#cb208-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">NRI Events:"</span>, nri<span class="sc">$</span>nri_events,</span>
 <span id="cb208-6"><a href="#cb208-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">NRI Non-Events:"</span>, nri<span class="sc">$</span>nri_nonevents,</span>
@@ -7437,7 +7443,7 @@ Total NRI: 0.2969484 </code></pre>
 <span id="cb218-13"><a href="#cb218-13" aria-hidden="true" tabindex="-1"></a><span class="co">#nri_res &lt;- CalculateCategoryNRI(true_labels, ref_prob, new_prob,</span></span>
 <span id="cb218-14"><a href="#cb218-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 ref_thresholds = c(0.3, 0.7), new_thresholds = c(0.5))</span></span>
 <span id="cb218-15"><a href="#cb218-15" aria-hidden="true" tabindex="-1"></a>nri_res <span class="ot">&lt;-</span> <span class="fu">CalculateCategoryNRI</span>(true_labels, ref_prob, new_prob,</span>
-<span id="cb218-16"><a href="#cb218-16" aria-hidden="true" tabindex="-1"></a>                                <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.5</span>))</span>
+<span id="cb218-16"><a href="#cb218-16" aria-hidden="true" tabindex="-1"></a>                                <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.5</span>),<span class="at">conf_int =</span> T)</span>
 <span id="cb218-17"><a href="#cb218-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(nri_res<span class="sc">$</span>nri_total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -7455,7 +7461,7 @@ Total NRI: 0.2969484 </code></pre>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb222"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb222-1"><a href="#cb222-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotIDICurve</span>(true_labels, ref_prob, new_prob, <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>),<span class="at">positive =</span> positive,</span>
-<span id="cb222-2"><a href="#cb222-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"idi"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb222-2"><a href="#cb222-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"idi"</span>),<span class="at">conf_int =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$plot</code></pre>
@@ -7469,7 +7475,13 @@ $ip
 [1] 0.08520462
 
 $idi
-[1] 0.09388852</code></pre>
+[1] 0.09388852
+
+$ci
+  metric    estimate       lower      upper
+1     IS 0.008683901 -0.04818525 0.06552147
+2     IP 0.085204623  0.05777544 0.11878047
+3    IDI 0.093888523  0.02842401 0.15768741</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -9291,11 +9303,11 @@ $idi
 <span id="cb245-734"><a href="#cb245-734" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb245-735"><a href="#cb245-735" aria-hidden="true" tabindex="-1"></a><span class="co"># IDI</span></span>
 <span id="cb245-736"><a href="#cb245-736" aria-hidden="true" tabindex="-1"></a>idi <span class="ot">&lt;-</span> <span class="fu">PlotIDICurve</span>(true_labels, ref_prob, new_prob, <span class="at">positive =</span> positive, </span>
-<span id="cb245-737"><a href="#cb245-737" aria-hidden="true" tabindex="-1"></a>                    <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir)</span>
+<span id="cb245-737"><a href="#cb245-737" aria-hidden="true" tabindex="-1"></a>                    <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir,<span class="at">conf_int =</span> T)</span>
 <span id="cb245-738"><a href="#cb245-738" aria-hidden="true" tabindex="-1"></a>idi</span>
 <span id="cb245-739"><a href="#cb245-739" aria-hidden="true" tabindex="-1"></a><span class="co"># NRI calculation</span></span>
 <span id="cb245-740"><a href="#cb245-740" aria-hidden="true" tabindex="-1"></a>nri <span class="ot">&lt;-</span> <span class="fu">CalculateCategoryNRI</span>(true_labels, ref_prob, new_prob, </span>
-<span id="cb245-741"><a href="#cb245-741" aria-hidden="true" tabindex="-1"></a>                            <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>))</span>
+<span id="cb245-741"><a href="#cb245-741" aria-hidden="true" tabindex="-1"></a>                            <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>),<span class="at">conf_int =</span> T)</span>
 <span id="cb245-742"><a href="#cb245-742" aria-hidden="true" tabindex="-1"></a><span class="co"># Export numeric results</span></span>
 <span id="cb245-743"><a href="#cb245-743" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">NRI Events:"</span>, nri<span class="sc">$</span>nri_events,</span>
 <span id="cb245-744"><a href="#cb245-744" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">NRI Non-Events:"</span>, nri<span class="sc">$</span>nri_nonevents,</span>
@@ -9333,13 +9345,13 @@ $idi
 <span id="cb245-776"><a href="#cb245-776" aria-hidden="true" tabindex="-1"></a><span class="co">#nri_res &lt;- CalculateCategoryNRI(true_labels, ref_prob, new_prob,</span></span>
 <span id="cb245-777"><a href="#cb245-777" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 ref_thresholds = c(0.3, 0.7), new_thresholds = c(0.5))</span></span>
 <span id="cb245-778"><a href="#cb245-778" aria-hidden="true" tabindex="-1"></a>nri_res <span class="ot">&lt;-</span> <span class="fu">CalculateCategoryNRI</span>(true_labels, ref_prob, new_prob,</span>
-<span id="cb245-779"><a href="#cb245-779" aria-hidden="true" tabindex="-1"></a>                                <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.5</span>))</span>
+<span id="cb245-779"><a href="#cb245-779" aria-hidden="true" tabindex="-1"></a>                                <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.5</span>),<span class="at">conf_int =</span> T)</span>
 <span id="cb245-780"><a href="#cb245-780" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(nri_res<span class="sc">$</span>nri_total)</span>
 <span id="cb245-781"><a href="#cb245-781" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotNRIHeatmap</span>(nri_res, <span class="at">ref_category_labels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>),</span>
 <span id="cb245-782"><a href="#cb245-782" aria-hidden="true" tabindex="-1"></a>               <span class="at">new_category_labels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>),</span>
 <span id="cb245-783"><a href="#cb245-783" aria-hidden="true" tabindex="-1"></a>               <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"heatmap"</span>))</span>
 <span id="cb245-784"><a href="#cb245-784" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotIDICurve</span>(true_labels, ref_prob, new_prob, <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>),<span class="at">positive =</span> positive,</span>
-<span id="cb245-785"><a href="#cb245-785" aria-hidden="true" tabindex="-1"></a>             <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"idi"</span>))</span>
+<span id="cb245-785"><a href="#cb245-785" aria-hidden="true" tabindex="-1"></a>             <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"idi"</span>),<span class="at">conf_int =</span> T)</span>
 <span id="cb245-786"><a href="#cb245-786" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>), <span class="at">show_ci =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb245-787"><a href="#cb245-787" aria-hidden="true" tabindex="-1"></a>               <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"roc"</span>))</span>
 <span id="cb245-788"><a href="#cb245-788" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotPredDist</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>),</span>
