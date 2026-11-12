@@ -732,17 +732,18 @@ Stat object created.</code></pre>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">surv_get_learner</span>(<span class="st">"surv.cv_glmnet"</span>, train_task),</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">surv_get_learner</span>(<span class="st">"surv.ranger"</span>,    train_task)</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>bmr1 <span class="ot">&lt;-</span> <span class="fu">surv_run_algorithm_benchmark</span>(train_task, learners_list)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.new</span>()</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>bmr2 <span class="ot">&lt;-</span> <span class="fu">surv_benchmark_learners</span>(train_task, <span class="at">learner_ids =</span> <span class="fu">c</span>(<span class="st">"surv.rpart"</span>, <span class="st">"surv.ranger"</span>), <span class="at">tune =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>bmr2_summary <span class="ot">&lt;-</span> <span class="fu">surv_summarize_benchmark</span>(bmr2)</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(bmr2_summary, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"02_model"</span>), <span class="st">"algorithm_benchmark.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>best_id <span class="ot">&lt;-</span> <span class="st">"surv.ranger"</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>tune <span class="ot">&lt;-</span> <span class="fu">surv_train_and_tune</span>(train_task, best_id, <span class="at">tuning_budget =</span> <span class="dv">25</span>)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>best_lrn <span class="ot">&lt;-</span> tune<span class="sc">$</span>learner</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>cv_cindex <span class="ot">&lt;-</span> tune<span class="sc">$</span>cv_performance</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"CV C-index after tuning:"</span>, <span class="fu">round</span>(cv_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>bmr1 <span class="ot">&lt;-</span> <span class="fu">surv_run_algorithm_benchmark</span>(train_task, learners_list)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.new</span>()</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>bmr2 <span class="ot">&lt;-</span> <span class="fu">surv_benchmark_learners</span>(train_task, <span class="at">learner_ids =</span> <span class="fu">c</span>(<span class="st">"surv.rpart"</span>, <span class="st">"surv.ranger"</span>), <span class="at">tune =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>bmr2_summary <span class="ot">&lt;-</span> <span class="fu">surv_summarize_benchmark</span>(bmr2)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(bmr2_summary, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"02_model"</span>), <span class="st">"algorithm_benchmark.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>best_id <span class="ot">&lt;-</span> <span class="st">"surv.ranger"</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>tune <span class="ot">&lt;-</span> <span class="fu">surv_train_and_tune</span>(train_task, best_id, <span class="at">tuning_budget =</span> <span class="dv">25</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>best_lrn <span class="ot">&lt;-</span> tune<span class="sc">$</span>learner</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>cv_cindex <span class="ot">&lt;-</span> tune<span class="sc">$</span>cv_performance</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"CV C-index after tuning:"</span>, <span class="fu">round</span>(cv_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>CV C-index after tuning: 0.6405 </code></pre>
@@ -2420,385 +2421,386 @@ GLOBAL                   7.05073  5 0.217
 <span id="cb62-395"><a href="#cb62-395" aria-hidden="true" tabindex="-1"></a>  <span class="fu">surv_get_learner</span>(<span class="st">"surv.cv_glmnet"</span>, train_task),</span>
 <span id="cb62-396"><a href="#cb62-396" aria-hidden="true" tabindex="-1"></a>  <span class="fu">surv_get_learner</span>(<span class="st">"surv.ranger"</span>,    train_task)</span>
 <span id="cb62-397"><a href="#cb62-397" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-398"><a href="#cb62-398" aria-hidden="true" tabindex="-1"></a>bmr1 <span class="ot">&lt;-</span> <span class="fu">surv_run_algorithm_benchmark</span>(train_task, learners_list)</span>
-<span id="cb62-399"><a href="#cb62-399" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.new</span>()</span>
-<span id="cb62-400"><a href="#cb62-400" aria-hidden="true" tabindex="-1"></a>bmr2 <span class="ot">&lt;-</span> <span class="fu">surv_benchmark_learners</span>(train_task, <span class="at">learner_ids =</span> <span class="fu">c</span>(<span class="st">"surv.rpart"</span>, <span class="st">"surv.ranger"</span>), <span class="at">tune =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-401"><a href="#cb62-401" aria-hidden="true" tabindex="-1"></a>bmr2_summary <span class="ot">&lt;-</span> <span class="fu">surv_summarize_benchmark</span>(bmr2)</span>
-<span id="cb62-402"><a href="#cb62-402" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(bmr2_summary, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"02_model"</span>), <span class="st">"algorithm_benchmark.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-403"><a href="#cb62-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-404"><a href="#cb62-404" aria-hidden="true" tabindex="-1"></a>best_id <span class="ot">&lt;-</span> <span class="st">"surv.ranger"</span></span>
-<span id="cb62-405"><a href="#cb62-405" aria-hidden="true" tabindex="-1"></a>tune <span class="ot">&lt;-</span> <span class="fu">surv_train_and_tune</span>(train_task, best_id, <span class="at">tuning_budget =</span> <span class="dv">25</span>)</span>
-<span id="cb62-406"><a href="#cb62-406" aria-hidden="true" tabindex="-1"></a>best_lrn <span class="ot">&lt;-</span> tune<span class="sc">$</span>learner</span>
-<span id="cb62-407"><a href="#cb62-407" aria-hidden="true" tabindex="-1"></a>cv_cindex <span class="ot">&lt;-</span> tune<span class="sc">$</span>cv_performance</span>
-<span id="cb62-408"><a href="#cb62-408" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"CV C-index after tuning:"</span>, <span class="fu">round</span>(cv_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-409"><a href="#cb62-409" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-410"><a href="#cb62-410" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-411"><a href="#cb62-411" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb62-412"><a href="#cb62-412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-413"><a href="#cb62-413" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4 Model Evaluation</span></span>
-<span id="cb62-414"><a href="#cb62-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-415"><a href="#cb62-415" aria-hidden="true" tabindex="-1"></a>This section trains and compares candidate models. Select models using discrimination, calibration, stability, and clinical utility together.</span>
-<span id="cb62-416"><a href="#cb62-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-417"><a href="#cb62-417" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb62-418"><a href="#cb62-418" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-14</span></span>
-<span id="cb62-419"><a href="#cb62-419" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
-<span id="cb62-420"><a href="#cb62-420" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-421"><a href="#cb62-421" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Model Evaluation</span></span>
-<span id="cb62-426"><a href="#cb62-426" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-427"><a href="#cb62-427" aria-hidden="true" tabindex="-1"></a>best_lrn<span class="sc">$</span>predict_type <span class="ot">&lt;-</span> <span class="st">"distr"</span></span>
-<span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a>train_perf <span class="ot">&lt;-</span> <span class="fu">surv_evaluate_model</span>(best_lrn, train_task,</span>
-<span id="cb62-429"><a href="#cb62-429" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">measures =</span> <span class="fu">list</span>(<span class="fu">msr</span>(<span class="st">"surv.cindex"</span>), <span class="fu">msr</span>(<span class="st">"surv.graf"</span>)))</span>
-<span id="cb62-430"><a href="#cb62-430" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Training apparent C-index:"</span>, <span class="fu">round</span>(train_perf<span class="sc">$</span>surv.cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-431"><a href="#cb62-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-432"><a href="#cb62-432" aria-hidden="true" tabindex="-1"></a>val_pred <span class="ot">&lt;-</span> best_lrn<span class="sc">$</span><span class="fu">predict</span>(val_task)</span>
-<span id="cb62-433"><a href="#cb62-433" aria-hidden="true" tabindex="-1"></a>val_cindex <span class="ot">&lt;-</span> val_pred<span class="sc">$</span><span class="fu">score</span>(<span class="fu">msr</span>(<span class="st">"surv.cindex"</span>))</span>
-<span id="cb62-434"><a href="#cb62-434" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Validation C-index:"</span>, <span class="fu">round</span>(val_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-435"><a href="#cb62-435" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-436"><a href="#cb62-436" aria-hidden="true" tabindex="-1"></a><span class="co"># Save performance metrics</span></span>
-<span id="cb62-437"><a href="#cb62-437" aria-hidden="true" tabindex="-1"></a>perf_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb62-438"><a href="#cb62-438" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dataset =</span> <span class="fu">c</span>(<span class="st">"Training"</span>, <span class="st">"Validation"</span>),</span>
-<span id="cb62-439"><a href="#cb62-439" aria-hidden="true" tabindex="-1"></a>  <span class="at">C_index =</span> <span class="fu">c</span>(train_perf<span class="sc">$</span>surv.cindex, val_cindex)</span>
-<span id="cb62-440"><a href="#cb62-440" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-441"><a href="#cb62-441" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(perf_df, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"performance.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-442"><a href="#cb62-442" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-443"><a href="#cb62-443" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.1 KM Curves ----</span></span>
-<span id="cb62-444"><a href="#cb62-444" aria-hidden="true" tabindex="-1"></a><span class="co"># IMPORTANT: The following KM curves and the cutoff derived from the training set</span></span>
-<span id="cb62-445"><a href="#cb62-445" aria-hidden="true" tabindex="-1"></a><span class="co"># are APPARENT (optimistic) performance. They are useful for internal exploration</span></span>
-<span id="cb62-446"><a href="#cb62-446" aria-hidden="true" tabindex="-1"></a><span class="co"># but MUST be re‑evaluated on an independent validation set before reporting.</span></span>
-<span id="cb62-447"><a href="#cb62-447" aria-hidden="true" tabindex="-1"></a>pred_train <span class="ot">&lt;-</span> best_lrn<span class="sc">$</span><span class="fu">predict</span>(train_task)</span>
-<span id="cb62-448"><a href="#cb62-448" aria-hidden="true" tabindex="-1"></a>cut_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(train_task<span class="sc">$</span><span class="fu">data</span>())</span>
-<span id="cb62-449"><a href="#cb62-449" aria-hidden="true" tabindex="-1"></a>cut_df<span class="sc">$</span>risk <span class="ot">&lt;-</span> pred_train<span class="sc">$</span>crank</span>
-<span id="cb62-450"><a href="#cb62-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-451"><a href="#cb62-451" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute optimal cutoff using multiple methods.</span></span>
-<span id="cb62-452"><a href="#cb62-452" aria-hidden="true" tabindex="-1"></a><span class="co"># For publication, consider using 'maxstat' (Hothorn &amp; Lausen, 2003) with</span></span>
-<span id="cb62-453"><a href="#cb62-453" aria-hidden="true" tabindex="-1"></a><span class="co"># bootstrap resampling to obtain a stable, data‑driven threshold.</span></span>
-<span id="cb62-454"><a href="#cb62-454" aria-hidden="true" tabindex="-1"></a><span class="co"># The 'p_optimize' method is also provided for historical consistency.</span></span>
-<span id="cb62-455"><a href="#cb62-455" aria-hidden="true" tabindex="-1"></a>cut_res <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb62-456"><a href="#cb62-456" aria-hidden="true" tabindex="-1"></a>  <span class="fu">surv_cutpoint</span>(cut_df, <span class="at">time =</span> <span class="st">"time"</span>, <span class="at">event =</span> <span class="st">"status"</span>, <span class="at">variables =</span> <span class="st">"risk"</span>)</span>
-<span id="cb62-457"><a href="#cb62-457" aria-hidden="true" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb62-458"><a href="#cb62-458" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"surv_cutpoint failed: "</span>, e<span class="sc">$</span>message, <span class="st">". Using median split."</span>)</span>
-<span id="cb62-459"><a href="#cb62-459" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">cutpoint =</span> <span class="fu">data.frame</span>(<span class="at">cutpoint =</span> <span class="fu">median</span>(cut_df<span class="sc">$</span>risk, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb62-460"><a href="#cb62-460" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb62-461"><a href="#cb62-461" aria-hidden="true" tabindex="-1"></a>opt_cutoff <span class="ot">&lt;-</span> cut_res<span class="sc">$</span>cutpoint<span class="sc">$</span>cutpoint</span>
-<span id="cb62-462"><a href="#cb62-462" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Optimal cutoff (from surv_cutpoint):"</span>, <span class="fu">round</span>(opt_cutoff, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-463"><a href="#cb62-463" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-464"><a href="#cb62-464" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate KM plots for different cutoff methods</span></span>
-<span id="cb62-465"><a href="#cb62-465" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: 'p_optimize' and 'maxstat' use bootstrap/maximally selected statistics</span></span>
-<span id="cb62-466"><a href="#cb62-466" aria-hidden="true" tabindex="-1"></a><span class="co"># and are exploratory; their p‑values should not be used as confirmatory.</span></span>
-<span id="cb62-467"><a href="#cb62-467" aria-hidden="true" tabindex="-1"></a>km_median    <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"median"</span>, <span class="at">risk_table =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb62-468"><a href="#cb62-468" aria-hidden="true" tabindex="-1"></a>km_tertile   <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"tertile"</span>)</span>
-<span id="cb62-469"><a href="#cb62-469" aria-hidden="true" tabindex="-1"></a>km_quartile  <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"quartile"</span>)</span>
-<span id="cb62-470"><a href="#cb62-470" aria-hidden="true" tabindex="-1"></a>km_p_optimize <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"p_optimize"</span>,</span>
-<span id="cb62-471"><a href="#cb62-471" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">n_boot =</span> <span class="dv">100</span>, <span class="at">fraction =</span> <span class="fl">0.7</span>)</span>
-<span id="cb62-472"><a href="#cb62-472" aria-hidden="true" tabindex="-1"></a>km_maxstat   <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"maxstat"</span>,</span>
-<span id="cb62-473"><a href="#cb62-473" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">n_boot =</span> <span class="dv">100</span>, <span class="at">minprop =</span> <span class="fl">0.3</span>)</span>
-<span id="cb62-474"><a href="#cb62-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-475"><a href="#cb62-475" aria-hidden="true" tabindex="-1"></a><span class="co"># Save training KM plots</span></span>
-<span id="cb62-476"><a href="#cb62-476" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_median)</span>
-<span id="cb62-477"><a href="#cb62-477" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-478"><a href="#cb62-478" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_tertile)</span>
-<span id="cb62-479"><a href="#cb62-479" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-480"><a href="#cb62-480" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_quartile)</span>
-<span id="cb62-481"><a href="#cb62-481" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-482"><a href="#cb62-482" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_p_optimize)</span>
-<span id="cb62-483"><a href="#cb62-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-484"><a href="#cb62-484" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_maxstat)</span>
-<span id="cb62-485"><a href="#cb62-485" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-486"><a href="#cb62-486" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply a fixed cutoff (here we use the median from training) to the validation set</span></span>
-<span id="cb62-487"><a href="#cb62-487" aria-hidden="true" tabindex="-1"></a>train_cutoff <span class="ot">&lt;-</span> <span class="fu">get_cf</span>(km_median)</span>
-<span id="cb62-488"><a href="#cb62-488" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">is.null</span>(train_cutoff)) train_cutoff <span class="ot">&lt;-</span> opt_cutoff</span>
-<span id="cb62-489"><a href="#cb62-489" aria-hidden="true" tabindex="-1"></a>km_val_fixed <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, val_task,</span>
-<span id="cb62-490"><a href="#cb62-490" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">cutoff_method =</span> <span class="st">"custom"</span>,</span>
-<span id="cb62-491"><a href="#cb62-491" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">custom_cutoffs =</span> train_cutoff,</span>
-<span id="cb62-492"><a href="#cb62-492" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">risk_table =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb62-493"><a href="#cb62-493" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-494"><a href="#cb62-494" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_val_fixed)</span>
-<span id="cb62-495"><a href="#cb62-495" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-496"><a href="#cb62-496" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.2 Subgroup Forest (FIXED: use subsetted prog) ----</span></span>
-<span id="cb62-497"><a href="#cb62-497" aria-hidden="true" tabindex="-1"></a><span class="co"># Subset prog to training samples to match train_task rows</span></span>
-<span id="cb62-498"><a href="#cb62-498" aria-hidden="true" tabindex="-1"></a>train_prog <span class="ot">&lt;-</span> prog</span>
-<span id="cb62-499"><a href="#cb62-499" aria-hidden="true" tabindex="-1"></a>train_prog<span class="sc">@</span>clean.data <span class="ot">&lt;-</span> prog<span class="sc">@</span>clean.data[train_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb62-500"><a href="#cb62-500" aria-hidden="true" tabindex="-1"></a>train_prog<span class="sc">@</span>info.data <span class="ot">&lt;-</span> prog<span class="sc">@</span>info.data[train_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb62-501"><a href="#cb62-501" aria-hidden="true" tabindex="-1"></a>train_prog<span class="sc">@</span>survival.data <span class="ot">&lt;-</span> prog<span class="sc">@</span>survival.data[train_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb62-502"><a href="#cb62-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-503"><a href="#cb62-503" aria-hidden="true" tabindex="-1"></a>clinical_cols <span class="ot">&lt;-</span> <span class="fu">colnames</span>(train_prog<span class="sc">@</span>info.data)</span>
-<span id="cb62-504"><a href="#cb62-504" aria-hidden="true" tabindex="-1"></a><span class="co"># info.data names are normalised by CreateStatObject(): spaces and dots become</span></span>
-<span id="cb62-505"><a href="#cb62-505" aria-hidden="true" tabindex="-1"></a><span class="co"># underscores. Passing the dotted spelling would make intersect() drop</span></span>
-<span id="cb62-506"><a href="#cb62-506" aria-hidden="true" tabindex="-1"></a><span class="co"># everything except "Gender" and silently shrink the subgroup forest.</span></span>
-<span id="cb62-507"><a href="#cb62-507" aria-hidden="true" tabindex="-1"></a>candidate_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gender"</span>, <span class="st">"Tobacco_smoking_history"</span>, <span class="st">"Drinking_history"</span>, <span class="st">"TNM_Stage"</span>)</span>
-<span id="cb62-508"><a href="#cb62-508" aria-hidden="true" tabindex="-1"></a>subgroup_vars <span class="ot">&lt;-</span> <span class="fu">intersect</span>(candidate_vars, clinical_cols)</span>
-<span id="cb62-509"><a href="#cb62-509" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-510"><a href="#cb62-510" aria-hidden="true" tabindex="-1"></a>forest <span class="ot">&lt;-</span> <span class="fu">surv_plot_subgroup_forest</span>(</span>
-<span id="cb62-511"><a href="#cb62-511" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> best_lrn,</span>
-<span id="cb62-512"><a href="#cb62-512" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> train_task,</span>
-<span id="cb62-513"><a href="#cb62-513" aria-hidden="true" tabindex="-1"></a>  <span class="at">subgroup_vars =</span> subgroup_vars,</span>
-<span id="cb62-514"><a href="#cb62-514" aria-hidden="true" tabindex="-1"></a>  <span class="at">prog =</span> train_prog,</span>
-<span id="cb62-515"><a href="#cb62-515" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_plot =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb62-516"><a href="#cb62-516" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_dir =</span> <span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>),</span>
-<span id="cb62-517"><a href="#cb62-517" aria-hidden="true" tabindex="-1"></a>  <span class="at">file_name =</span> <span class="st">"subgroup_forest.pdf"</span></span>
-<span id="cb62-518"><a href="#cb62-518" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-519"><a href="#cb62-519" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(forest)</span>
-<span id="cb62-520"><a href="#cb62-520" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-521"><a href="#cb62-521" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.3 Time-dependent AUC ----</span></span>
-<span id="cb62-522"><a href="#cb62-522" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: These are also apparent performance when computed on the training set.</span></span>
-<span id="cb62-523"><a href="#cb62-523" aria-hidden="true" tabindex="-1"></a>auc_train <span class="ot">&lt;-</span> <span class="fu">surv_plot_time_dependent_auc</span>(best_lrn, train_task)</span>
-<span id="cb62-524"><a href="#cb62-524" aria-hidden="true" tabindex="-1"></a>auc_val   <span class="ot">&lt;-</span> <span class="fu">surv_plot_time_dependent_auc</span>(best_lrn, val_task)</span>
-<span id="cb62-525"><a href="#cb62-525" aria-hidden="true" tabindex="-1"></a>auc_cmp   <span class="ot">&lt;-</span> <span class="fu">surv_plot_comparison_auc</span>(best_lrn, train_task, val_task)</span>
-<span id="cb62-526"><a href="#cb62-526" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"AUC_comparison.pdf"</span>), auc_cmp, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
-<span id="cb62-527"><a href="#cb62-527" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-528"><a href="#cb62-528" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.4 Calibration ----</span></span>
-<span id="cb62-529"><a href="#cb62-529" aria-hidden="true" tabindex="-1"></a>cal_train <span class="ot">&lt;-</span> <span class="fu">surv_plot_calibration</span>(best_lrn, train_task, <span class="at">time_point =</span> <span class="dv">50</span>)</span>
-<span id="cb62-530"><a href="#cb62-530" aria-hidden="true" tabindex="-1"></a>cal_cmp   <span class="ot">&lt;-</span> <span class="fu">surv_plot_comparison_calibration</span>(best_lrn, train_task, val_task, <span class="at">time_point =</span> <span class="dv">50</span>)</span>
-<span id="cb62-531"><a href="#cb62-531" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"Calibration_train.pdf"</span>), cal_train, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-532"><a href="#cb62-532" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"Calibration_comparison.pdf"</span>), cal_cmp, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-533"><a href="#cb62-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-534"><a href="#cb62-534" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.5 External Validation (using validation set) ----</span></span>
-<span id="cb62-535"><a href="#cb62-535" aria-hidden="true" tabindex="-1"></a>val_data_ext <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(task_full<span class="sc">$</span><span class="fu">data</span>())[val_idx, selected_feats, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb62-536"><a href="#cb62-536" aria-hidden="true" tabindex="-1"></a>val_data_ext<span class="sc">$</span>time <span class="ot">&lt;-</span> task_full<span class="sc">$</span><span class="fu">data</span>()[[task_full<span class="sc">$</span>target_names[<span class="dv">1</span>]]][val_idx]</span>
-<span id="cb62-537"><a href="#cb62-537" aria-hidden="true" tabindex="-1"></a>val_data_ext<span class="sc">$</span>status <span class="ot">&lt;-</span> task_full<span class="sc">$</span><span class="fu">data</span>()[[task_full<span class="sc">$</span>target_names[<span class="dv">2</span>]]][val_idx]</span>
-<span id="cb62-538"><a href="#cb62-538" aria-hidden="true" tabindex="-1"></a>val_res <span class="ot">&lt;-</span> <span class="fu">surv_predict_on_validation</span>(best_lrn, val_data_ext, train_task)</span>
-<span id="cb62-539"><a href="#cb62-539" aria-hidden="true" tabindex="-1"></a>val_cindex_alt <span class="ot">&lt;-</span> val_res<span class="sc">$</span>prediction<span class="sc">$</span><span class="fu">score</span>(<span class="fu">msr</span>(<span class="st">"surv.cindex"</span>))</span>
-<span id="cb62-540"><a href="#cb62-540" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Validation C-index (alt):"</span>, <span class="fu">round</span>(val_cindex_alt, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-541"><a href="#cb62-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-542"><a href="#cb62-542" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.6 Nomogram ----</span></span>
-<span id="cb62-543"><a href="#cb62-543" aria-hidden="true" tabindex="-1"></a><span class="co"># The revized surv_generate_nomogram now includes a proportional hazards test</span></span>
-<span id="cb62-544"><a href="#cb62-544" aria-hidden="true" tabindex="-1"></a><span class="co"># (cox.zph) which will be printed to the console. If any variable violates</span></span>
-<span id="cb62-545"><a href="#cb62-545" aria-hidden="true" tabindex="-1"></a><span class="co"># the PH assumption, a warning is shown.</span></span>
-<span id="cb62-546"><a href="#cb62-546" aria-hidden="true" tabindex="-1"></a>nom <span class="ot">&lt;-</span> <span class="fu">surv_generate_nomogram</span>(train_task,</span>
-<span id="cb62-547"><a href="#cb62-547" aria-hidden="true" tabindex="-1"></a>                              <span class="at">selected_features =</span> <span class="fu">head</span>(selected_feats, <span class="dv">5</span>),</span>
-<span id="cb62-548"><a href="#cb62-548" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_points =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">25</span>, <span class="dv">38</span>),</span>
-<span id="cb62-549"><a href="#cb62-549" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_unit =</span> <span class="st">"months"</span>)</span>
-<span id="cb62-550"><a href="#cb62-550" aria-hidden="true" tabindex="-1"></a><span class="co"># Nomogram is drawn; optionally save via pdf().</span></span>
-<span id="cb62-551"><a href="#cb62-551" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-552"><a href="#cb62-552" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-553"><a href="#cb62-553" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb62-554"><a href="#cb62-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-555"><a href="#cb62-555" aria-hidden="true" tabindex="-1"></a><span class="fu">### 5 Robustness Analysis</span></span>
-<span id="cb62-556"><a href="#cb62-556" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-557"><a href="#cb62-557" aria-hidden="true" tabindex="-1"></a>This section tests sensitivity to sampling, censoring, and feature changes. Robust conclusions should remain similar under reasonable perturbations.</span>
-<span id="cb62-558"><a href="#cb62-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-559"><a href="#cb62-559" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb62-560"><a href="#cb62-560" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-15</span></span>
-<span id="cb62-561"><a href="#cb62-561" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
-<span id="cb62-562"><a href="#cb62-562" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-563"><a href="#cb62-563" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb62-564"><a href="#cb62-564" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb62-565"><a href="#cb62-565" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb62-566"><a href="#cb62-566" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb62-567"><a href="#cb62-567" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Robustness Analysis</span></span>
-<span id="cb62-568"><a href="#cb62-568" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-569"><a href="#cb62-569" aria-hidden="true" tabindex="-1"></a>stab <span class="ot">&lt;-</span> <span class="fu">surv_analyze_feature_stability</span>(train_task, <span class="st">"time"</span>, <span class="st">"status"</span>, <span class="at">n_repeat =</span> <span class="dv">20</span>, <span class="at">alpha =</span> <span class="dv">1</span>)</span>
-<span id="cb62-570"><a href="#cb62-570" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Stability index:"</span>, <span class="fu">round</span>(stab<span class="sc">$</span>stability_index, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-571"><a href="#cb62-571" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"stability_plot.pdf"</span>), stab<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-572"><a href="#cb62-572" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(stab<span class="sc">$</span>frequencies, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"stability_frequencies.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-573"><a href="#cb62-573" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-574"><a href="#cb62-574" aria-hidden="true" tabindex="-1"></a>abl <span class="ot">&lt;-</span> <span class="fu">surv_analyze_feature_ablation</span>(train_task, best_id, selected_feats)</span>
-<span id="cb62-575"><a href="#cb62-575" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"ablation_plot.pdf"</span>), abl<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-576"><a href="#cb62-576" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(abl<span class="sc">$</span>results, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"ablation_results.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-577"><a href="#cb62-577" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-578"><a href="#cb62-578" aria-hidden="true" tabindex="-1"></a>sens_sample <span class="ot">&lt;-</span> <span class="fu">surv_analyze_model_sensitivity</span>(train_task, best_id, <span class="at">analysis_type =</span> <span class="st">"sample_size"</span>)</span>
-<span id="cb62-579"><a href="#cb62-579" aria-hidden="true" tabindex="-1"></a>sens_censor <span class="ot">&lt;-</span> <span class="fu">surv_analyze_model_sensitivity</span>(train_task, best_id, <span class="at">analysis_type =</span> <span class="st">"censoring"</span>)</span>
-<span id="cb62-580"><a href="#cb62-580" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_sample.pdf"</span>), sens_sample<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
-<span id="cb62-581"><a href="#cb62-581" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_censor.pdf"</span>), sens_censor<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
-<span id="cb62-582"><a href="#cb62-582" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(sens_sample<span class="sc">$</span>results, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_sample.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-583"><a href="#cb62-583" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(sens_censor<span class="sc">$</span>results, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_censor.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-584"><a href="#cb62-584" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-585"><a href="#cb62-585" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-586"><a href="#cb62-586" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb62-587"><a href="#cb62-587" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-588"><a href="#cb62-588" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6 DCA &amp; SHAP</span></span>
-<span id="cb62-589"><a href="#cb62-589" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-590"><a href="#cb62-590" aria-hidden="true" tabindex="-1"></a>This section examines clinical utility and model explanations. Explanatory plots describe model behavior and do not establish causality.</span>
-<span id="cb62-591"><a href="#cb62-591" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-592"><a href="#cb62-592" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb62-593"><a href="#cb62-593" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-16</span></span>
-<span id="cb62-594"><a href="#cb62-594" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
-<span id="cb62-595"><a href="#cb62-595" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-596"><a href="#cb62-596" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb62-597"><a href="#cb62-597" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb62-598"><a href="#cb62-598" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb62-599"><a href="#cb62-599" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb62-600"><a href="#cb62-600" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. DCA &amp; SHAP</span></span>
-<span id="cb62-601"><a href="#cb62-601" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-602"><a href="#cb62-602" aria-hidden="true" tabindex="-1"></a>val_time <span class="ot">&lt;-</span> val_task<span class="sc">$</span><span class="fu">data</span>()[[val_task<span class="sc">$</span>target_names[<span class="dv">1</span>]]]</span>
-<span id="cb62-603"><a href="#cb62-603" aria-hidden="true" tabindex="-1"></a>val_status <span class="ot">&lt;-</span> val_task<span class="sc">$</span><span class="fu">data</span>()[[val_task<span class="sc">$</span>target_names[<span class="dv">2</span>]]]</span>
-<span id="cb62-604"><a href="#cb62-604" aria-hidden="true" tabindex="-1"></a>event_times <span class="ot">&lt;-</span> val_time[val_status <span class="sc">==</span> <span class="dv">1</span>]</span>
-<span id="cb62-605"><a href="#cb62-605" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(event_times) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">stop</span>(<span class="st">"No events in validation set."</span>)</span>
-<span id="cb62-606"><a href="#cb62-606" aria-hidden="true" tabindex="-1"></a>eval_time <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">quantile</span>(event_times, <span class="fl">0.5</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">0</span>)</span>
-<span id="cb62-607"><a href="#cb62-607" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (eval_time <span class="sc">&lt;</span> <span class="fu">min</span>(event_times)) eval_time <span class="ot">&lt;-</span> <span class="fu">min</span>(event_times)</span>
-<span id="cb62-608"><a href="#cb62-608" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Using eval_time ="</span>, eval_time, <span class="st">"for DCA</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-609"><a href="#cb62-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-610"><a href="#cb62-610" aria-hidden="true" tabindex="-1"></a>dca_res <span class="ot">&lt;-</span> <span class="fu">plot_dca_survival</span>(</span>
-<span id="cb62-611"><a href="#cb62-611" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(<span class="st">"Tuned"</span> <span class="ot">=</span> best_lrn),</span>
-<span id="cb62-612"><a href="#cb62-612" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> val_task,</span>
-<span id="cb62-613"><a href="#cb62-613" aria-hidden="true" tabindex="-1"></a>  <span class="at">eval_time =</span> eval_time,</span>
-<span id="cb62-614"><a href="#cb62-614" aria-hidden="true" tabindex="-1"></a>  <span class="at">clin_range =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>),</span>
-<span id="cb62-615"><a href="#cb62-615" aria-hidden="true" tabindex="-1"></a>  <span class="at">print_stats =</span> <span class="cn">TRUE</span></span>
-<span id="cb62-616"><a href="#cb62-616" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-617"><a href="#cb62-617" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-618"><a href="#cb62-618" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"dca_plot.pdf"</span>), dca_res<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
-<span id="cb62-619"><a href="#cb62-619" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dca_res<span class="sc">$</span>table, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"dca_table.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-620"><a href="#cb62-620" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-621"><a href="#cb62-621" aria-hidden="true" tabindex="-1"></a>shap_global <span class="ot">&lt;-</span> <span class="fu">surv_explain_shap</span>(</span>
-<span id="cb62-622"><a href="#cb62-622" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> best_lrn,</span>
-<span id="cb62-623"><a href="#cb62-623" aria-hidden="true" tabindex="-1"></a>  <span class="at">task =</span> val_task,</span>
-<span id="cb62-624"><a href="#cb62-624" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"global"</span>,</span>
-<span id="cb62-625"><a href="#cb62-625" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_explain =</span> <span class="dv">30</span>,</span>
-<span id="cb62-626"><a href="#cb62-626" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_background =</span> <span class="dv">10</span>,</span>
-<span id="cb62-627"><a href="#cb62-627" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_timepoints =</span> <span class="dv">10</span>,</span>
-<span id="cb62-628"><a href="#cb62-628" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_top_features =</span> <span class="dv">6</span>,</span>
-<span id="cb62-629"><a href="#cb62-629" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
-<span id="cb62-630"><a href="#cb62-630" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-631"><a href="#cb62-631" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_global_bar.pdf"</span>), shap_global<span class="sc">$</span>plots<span class="sc">$</span>bar_plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-632"><a href="#cb62-632" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(shap_global<span class="sc">$</span>plots<span class="sc">$</span>line_plot)) {</span>
-<span id="cb62-633"><a href="#cb62-633" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_global_line.pdf"</span>), shap_global<span class="sc">$</span>plots<span class="sc">$</span>line_plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-634"><a href="#cb62-634" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-635"><a href="#cb62-635" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(shap_global<span class="sc">$</span>shap_long, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_values_global.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-636"><a href="#cb62-636" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-637"><a href="#cb62-637" aria-hidden="true" tabindex="-1"></a>beeswarm_plot <span class="ot">&lt;-</span> <span class="fu">surv_plot_shap_beeswarm</span>(shap_global, <span class="at">top_n =</span> <span class="dv">6</span>, <span class="at">method =</span> <span class="st">"beeswarm"</span>,</span>
-<span id="cb62-638"><a href="#cb62-638" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">title =</span> <span class="st">"Global SurvSHAP (validation set)"</span>)</span>
-<span id="cb62-639"><a href="#cb62-639" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_beeswarm.pdf"</span>), beeswarm_plot, <span class="at">width =</span> <span class="dv">9</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb62-640"><a href="#cb62-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-641"><a href="#cb62-641" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-642"><a href="#cb62-642" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb62-643"><a href="#cb62-643" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-644"><a href="#cb62-644" aria-hidden="true" tabindex="-1"></a><span class="fu">### 7 Save Final PrognosiX Object</span></span>
-<span id="cb62-645"><a href="#cb62-645" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-646"><a href="#cb62-646" aria-hidden="true" tabindex="-1"></a>This section saves model objects, tables, and figures for reproducibility, review, and reuse.</span>
-<span id="cb62-647"><a href="#cb62-647" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-648"><a href="#cb62-648" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb62-649"><a href="#cb62-649" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-17</span></span>
-<span id="cb62-650"><a href="#cb62-650" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
-<span id="cb62-651"><a href="#cb62-651" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-652"><a href="#cb62-652" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb62-653"><a href="#cb62-653" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb62-654"><a href="#cb62-654" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb62-655"><a href="#cb62-655" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb62-656"><a href="#cb62-656" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Save Final PrognosiX Object</span></span>
-<span id="cb62-657"><a href="#cb62-657" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-658"><a href="#cb62-658" aria-hidden="true" tabindex="-1"></a>prog<span class="sc">@</span>best.model <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb62-659"><a href="#cb62-659" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner_id =</span> best_id,</span>
-<span id="cb62-660"><a href="#cb62-660" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> best_lrn,</span>
-<span id="cb62-661"><a href="#cb62-661" aria-hidden="true" tabindex="-1"></a>  <span class="at">best_params =</span> tune<span class="sc">$</span>best_params,</span>
-<span id="cb62-662"><a href="#cb62-662" aria-hidden="true" tabindex="-1"></a>  <span class="at">cv_cindex =</span> cv_cindex,</span>
-<span id="cb62-663"><a href="#cb62-663" aria-hidden="true" tabindex="-1"></a>  <span class="at">features =</span> selected_feats,</span>
-<span id="cb62-664"><a href="#cb62-664" aria-hidden="true" tabindex="-1"></a>  <span class="at">cutoff =</span> opt_cutoff,</span>
-<span id="cb62-665"><a href="#cb62-665" aria-hidden="true" tabindex="-1"></a>  <span class="at">decision_type =</span> <span class="st">"binary"</span>,</span>
-<span id="cb62-666"><a href="#cb62-666" aria-hidden="true" tabindex="-1"></a>  <span class="at">train_cols =</span> train_task<span class="sc">$</span>feature_names</span>
-<span id="cb62-667"><a href="#cb62-667" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-668"><a href="#cb62-668" aria-hidden="true" tabindex="-1"></a>prog<span class="sc">@</span>subgroup.risk <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb62-669"><a href="#cb62-669" aria-hidden="true" tabindex="-1"></a>  <span class="at">benchmark_table =</span> bmr1<span class="sc">$</span>table,</span>
-<span id="cb62-670"><a href="#cb62-670" aria-hidden="true" tabindex="-1"></a>  <span class="at">stability =</span> stab,</span>
-<span id="cb62-671"><a href="#cb62-671" aria-hidden="true" tabindex="-1"></a>  <span class="at">ablation =</span> abl,</span>
-<span id="cb62-672"><a href="#cb62-672" aria-hidden="true" tabindex="-1"></a>  <span class="at">validation =</span> <span class="fu">list</span>(<span class="at">cindex =</span> val_cindex, <span class="at">n =</span> val_task<span class="sc">$</span>nrow)</span>
-<span id="cb62-673"><a href="#cb62-673" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-674"><a href="#cb62-674" aria-hidden="true" tabindex="-1"></a>prog<span class="sc">@</span>split.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">train_idx =</span> train_idx, <span class="at">val_idx =</span> val_idx)</span>
-<span id="cb62-675"><a href="#cb62-675" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(prog, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"data"</span>), <span class="st">"prog_obj_final.rds"</span>))</span>
-<span id="cb62-676"><a href="#cb62-676" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-677"><a href="#cb62-677" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-678"><a href="#cb62-678" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb62-679"><a href="#cb62-679" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-680"><a href="#cb62-680" aria-hidden="true" tabindex="-1"></a><span class="fu">### 8 Deployment: Prediction for New Samples</span></span>
-<span id="cb62-681"><a href="#cb62-681" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-682"><a href="#cb62-682" aria-hidden="true" tabindex="-1"></a>This section applies the trained object to new samples. Validate input format, performance, and target population in an independent cohort before deployment.</span>
-<span id="cb62-683"><a href="#cb62-683" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-684"><a href="#cb62-684" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb62-685"><a href="#cb62-685" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-19</span></span>
-<span id="cb62-686"><a href="#cb62-686" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
-<span id="cb62-687"><a href="#cb62-687" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-688"><a href="#cb62-688" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb62-689"><a href="#cb62-689" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb62-690"><a href="#cb62-690" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb62-691"><a href="#cb62-691" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb62-692"><a href="#cb62-692" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Deployment: Prediction for New Samples</span></span>
-<span id="cb62-693"><a href="#cb62-693" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-694"><a href="#cb62-694" aria-hidden="true" tabindex="-1"></a><span class="co"># Instead of the veteran example, use actual rows from your training data</span></span>
-<span id="cb62-695"><a href="#cb62-695" aria-hidden="true" tabindex="-1"></a><span class="co"># (or real new data) that contain all selected features.</span></span>
-<span id="cb62-696"><a href="#cb62-696" aria-hidden="true" tabindex="-1"></a><span class="co"># For demonstration, we take the first 2 rows of the original feature matrix.</span></span>
-<span id="cb62-697"><a href="#cb62-697" aria-hidden="true" tabindex="-1"></a><span class="co">#new_patients &lt;- data.frame(</span></span>
-<span id="cb62-698"><a href="#cb62-698" aria-hidden="true" tabindex="-1"></a><span class="co">#  Mean_corpuscular_hemoglobin_concentration = c(33, 34),</span></span>
-<span id="cb62-699"><a href="#cb62-699" aria-hidden="true" tabindex="-1"></a><span class="co">#  Basophil_count = c(0.02, 0.03),</span></span>
-<span id="cb62-700"><a href="#cb62-700" aria-hidden="true" tabindex="-1"></a><span class="co">#  Monocytes = c(0.6, 0.7),</span></span>
-<span id="cb62-701"><a href="#cb62-701" aria-hidden="true" tabindex="-1"></a><span class="co">#  Neutrophilic_granulocyte = c(4.2, 5.1),</span></span>
-<span id="cb62-702"><a href="#cb62-702" aria-hidden="true" tabindex="-1"></a><span class="co">#  Red_blood_cell_distribution_width_CV = c(12.3, 11.8),</span></span>
-<span id="cb62-703"><a href="#cb62-703" aria-hidden="true" tabindex="-1"></a><span class="co">#  Mean_red_blood_cell_volume = c(89, 92),</span></span>
-<span id="cb62-704"><a href="#cb62-704" aria-hidden="true" tabindex="-1"></a><span class="co">#  Lymphocytes_count = c(1.8, 2.1),</span></span>
-<span id="cb62-705"><a href="#cb62-705" aria-hidden="true" tabindex="-1"></a><span class="co">#  Platelet_volume_distribution_width = c(12.0, 13.1),</span></span>
-<span id="cb62-706"><a href="#cb62-706" aria-hidden="true" tabindex="-1"></a><span class="co">#  Lymphocytes = c(1.8, 2.1),   # note: this may be same as Lymphocytes_count? check your data</span></span>
-<span id="cb62-707"><a href="#cb62-707" aria-hidden="true" tabindex="-1"></a><span class="co">#  Monocytes_count = c(0.6, 0.7),</span></span>
-<span id="cb62-708"><a href="#cb62-708" aria-hidden="true" tabindex="-1"></a><span class="co">#  Neutrophilic_granulocyte_count = c(4.2, 5.1),</span></span>
-<span id="cb62-709"><a href="#cb62-709" aria-hidden="true" tabindex="-1"></a><span class="co">#  Mean_platelet_volume = c(10.5, 11.0),</span></span>
-<span id="cb62-710"><a href="#cb62-710" aria-hidden="true" tabindex="-1"></a><span class="co">#  row.names = c("patient_1", "patient_2")</span></span>
-<span id="cb62-711"><a href="#cb62-711" aria-hidden="true" tabindex="-1"></a><span class="co">#)</span></span>
-<span id="cb62-712"><a href="#cb62-712" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-713"><a href="#cb62-713" aria-hidden="true" tabindex="-1"></a><span class="co">#risk_scores &lt;- predict_prognosix(prog, new_patients, impute = TRUE)</span></span>
-<span id="cb62-714"><a href="#cb62-714" aria-hidden="true" tabindex="-1"></a><span class="co">#pred_groups_med &lt;- predict_risk_groups(prog, new_patients, cutoff_method = "median")</span></span>
-<span id="cb62-715"><a href="#cb62-715" aria-hidden="true" tabindex="-1"></a><span class="co">#pred_groups_cus &lt;- predict_risk_groups(prog, new_patients,</span></span>
-<span id="cb62-716"><a href="#cb62-716" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       cutoff_method = "custom",</span></span>
-<span id="cb62-717"><a href="#cb62-717" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       custom_cutoffs = opt_cutoff)</span></span>
-<span id="cb62-718"><a href="#cb62-718" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Risk scores:\n"); print(risk_scores)</span></span>
-<span id="cb62-719"><a href="#cb62-719" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Median groups:\n"); print(pred_groups_med)</span></span>
-<span id="cb62-720"><a href="#cb62-720" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Custom groups:\n"); print(pred_groups_cus)</span></span>
-<span id="cb62-721"><a href="#cb62-721" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-722"><a href="#cb62-722" aria-hidden="true" tabindex="-1"></a>manager <span class="ot">&lt;-</span> <span class="fu">New_Prog_Manager</span>(prog)</span>
-<span id="cb62-723"><a href="#cb62-723" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-724"><a href="#cb62-724" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interactive</span>()) {</span>
-<span id="cb62-725"><a href="#cb62-725" aria-hidden="true" tabindex="-1"></a>  <span class="fu">use_app_theme_grey</span>()</span>
-<span id="cb62-726"><a href="#cb62-726" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_prog_app_text</span>(</span>
-<span id="cb62-727"><a href="#cb62-727" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Survival Risk Predictor"</span>,</span>
-<span id="cb62-728"><a href="#cb62-728" aria-hidden="true" tabindex="-1"></a>    <span class="at">citation_text =</span> <span class="st">"Data: PMID37633276_DIA_plasmaproomic cohort."</span></span>
-<span id="cb62-729"><a href="#cb62-729" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb62-730"><a href="#cb62-730" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_prog_app_theme</span>(</span>
-<span id="cb62-731"><a href="#cb62-731" aria-hidden="true" tabindex="-1"></a>    <span class="at">primary_color =</span> <span class="st">"#2c7fb8"</span>, <span class="at">background_color =</span> <span class="st">"#f0f4f8"</span>, <span class="at">sidebar_color =</span> <span class="st">"#e9ecef"</span>,</span>
-<span id="cb62-732"><a href="#cb62-732" aria-hidden="true" tabindex="-1"></a>    <span class="at">box_background =</span> <span class="st">"#ffffff"</span>, <span class="at">label_color =</span> <span class="st">"#2c7fb8"</span>,</span>
-<span id="cb62-733"><a href="#cb62-733" aria-hidden="true" tabindex="-1"></a>    <span class="at">run_button_gradient_start =</span> <span class="st">"#2c7fb8"</span>, <span class="at">run_button_gradient_end =</span> <span class="st">"#1d4e6e"</span>,</span>
-<span id="cb62-734"><a href="#cb62-734" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_high_color =</span> <span class="st">"#d9534f"</span>, <span class="at">risk_medium_color =</span> <span class="st">"#f0ad4e"</span>, <span class="at">risk_low_color =</span> <span class="st">"#5cb85c"</span>,</span>
-<span id="cb62-735"><a href="#cb62-735" aria-hidden="true" tabindex="-1"></a>    <span class="at">table_header_color =</span> <span class="st">"#2c7fb8"</span>, <span class="at">font_family =</span> <span class="st">"Arial, sans-serif"</span>, <span class="at">font_size_base =</span> <span class="dv">14</span></span>
-<span id="cb62-736"><a href="#cb62-736" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb62-737"><a href="#cb62-737" aria-hidden="true" tabindex="-1"></a>  <span class="fu">launch_prog_deploy_app</span>(</span>
-<span id="cb62-738"><a href="#cb62-738" aria-hidden="true" tabindex="-1"></a>    manager,</span>
-<span id="cb62-739"><a href="#cb62-739" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_dict =</span> <span class="fu">data.frame</span>(</span>
-<span id="cb62-740"><a href="#cb62-740" aria-hidden="true" tabindex="-1"></a>      <span class="at">Feature =</span> selected_feats,</span>
-<span id="cb62-741"><a href="#cb62-741" aria-hidden="true" tabindex="-1"></a>      <span class="at">Description =</span> <span class="fu">paste</span>(<span class="st">"Predictor"</span>, <span class="fu">seq_along</span>(selected_feats)),</span>
-<span id="cb62-742"><a href="#cb62-742" aria-hidden="true" tabindex="-1"></a>      <span class="at">Units =</span> <span class="fu">rep</span>(<span class="st">"--"</span>, <span class="fu">length</span>(selected_feats))</span>
-<span id="cb62-743"><a href="#cb62-743" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb62-744"><a href="#cb62-744" aria-hidden="true" tabindex="-1"></a>    <span class="at">project_info =</span> <span class="fu">list</span>(</span>
-<span id="cb62-745"><a href="#cb62-745" aria-hidden="true" tabindex="-1"></a>      <span class="at">abstract =</span> <span class="fu">paste</span>(<span class="st">"Prognostic model trained on"</span>, train_task<span class="sc">$</span>nrow, <span class="st">"patients."</span>),</span>
-<span id="cb62-746"><a href="#cb62-746" aria-hidden="true" tabindex="-1"></a>      <span class="at">citation =</span> <span class="st">"PMID37633276_DIA_plasmaproomic cohort."</span></span>
-<span id="cb62-747"><a href="#cb62-747" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-748"><a href="#cb62-748" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb62-749"><a href="#cb62-749" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-750"><a href="#cb62-750" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-751"><a href="#cb62-751" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-752"><a href="#cb62-752" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb62-753"><a href="#cb62-753" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-754"><a href="#cb62-754" aria-hidden="true" tabindex="-1"></a><span class="fu">### 9 Final Report</span></span>
-<span id="cb62-755"><a href="#cb62-755" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-756"><a href="#cb62-756" aria-hidden="true" tabindex="-1"></a>This section saves model objects, tables, and figures for reproducibility, review, and reuse.</span>
-<span id="cb62-757"><a href="#cb62-757" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-758"><a href="#cb62-758" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb62-759"><a href="#cb62-759" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-20</span></span>
-<span id="cb62-760"><a href="#cb62-760" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
-<span id="cb62-761"><a href="#cb62-761" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb62-762"><a href="#cb62-762" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb62-763"><a href="#cb62-763" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb62-764"><a href="#cb62-764" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb62-765"><a href="#cb62-765" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb62-766"><a href="#cb62-766" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. Final Report</span></span>
-<span id="cb62-767"><a href="#cb62-767" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
-<span id="cb62-768"><a href="#cb62-768" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-769"><a href="#cb62-769" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Module 4 (advanced, leakage‑free) finished successfully!</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-770"><a href="#cb62-770" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Best model:"</span>, best_id,</span>
-<span id="cb62-771"><a href="#cb62-771" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| CV C-index (training):"</span>, <span class="fu">round</span>(cv_cindex, <span class="dv">4</span>),</span>
-<span id="cb62-772"><a href="#cb62-772" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| Validation C-index:"</span>, <span class="fu">round</span>(val_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-773"><a href="#cb62-773" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Optimal cutoff:"</span>, <span class="fu">round</span>(opt_cutoff, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-774"><a href="#cb62-774" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"All results saved under:"</span>, OUTPUT_DIR, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-775"><a href="#cb62-775" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb62-776"><a href="#cb62-776" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb62-398"><a href="#cb62-398" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb62-399"><a href="#cb62-399" aria-hidden="true" tabindex="-1"></a>bmr1 <span class="ot">&lt;-</span> <span class="fu">surv_run_algorithm_benchmark</span>(train_task, learners_list)</span>
+<span id="cb62-400"><a href="#cb62-400" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.new</span>()</span>
+<span id="cb62-401"><a href="#cb62-401" aria-hidden="true" tabindex="-1"></a>bmr2 <span class="ot">&lt;-</span> <span class="fu">surv_benchmark_learners</span>(train_task, <span class="at">learner_ids =</span> <span class="fu">c</span>(<span class="st">"surv.rpart"</span>, <span class="st">"surv.ranger"</span>), <span class="at">tune =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-402"><a href="#cb62-402" aria-hidden="true" tabindex="-1"></a>bmr2_summary <span class="ot">&lt;-</span> <span class="fu">surv_summarize_benchmark</span>(bmr2)</span>
+<span id="cb62-403"><a href="#cb62-403" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(bmr2_summary, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"02_model"</span>), <span class="st">"algorithm_benchmark.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-404"><a href="#cb62-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-405"><a href="#cb62-405" aria-hidden="true" tabindex="-1"></a>best_id <span class="ot">&lt;-</span> <span class="st">"surv.ranger"</span></span>
+<span id="cb62-406"><a href="#cb62-406" aria-hidden="true" tabindex="-1"></a>tune <span class="ot">&lt;-</span> <span class="fu">surv_train_and_tune</span>(train_task, best_id, <span class="at">tuning_budget =</span> <span class="dv">25</span>)</span>
+<span id="cb62-407"><a href="#cb62-407" aria-hidden="true" tabindex="-1"></a>best_lrn <span class="ot">&lt;-</span> tune<span class="sc">$</span>learner</span>
+<span id="cb62-408"><a href="#cb62-408" aria-hidden="true" tabindex="-1"></a>cv_cindex <span class="ot">&lt;-</span> tune<span class="sc">$</span>cv_performance</span>
+<span id="cb62-409"><a href="#cb62-409" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"CV C-index after tuning:"</span>, <span class="fu">round</span>(cv_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-410"><a href="#cb62-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-411"><a href="#cb62-411" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-412"><a href="#cb62-412" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb62-413"><a href="#cb62-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-414"><a href="#cb62-414" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4 Model Evaluation</span></span>
+<span id="cb62-415"><a href="#cb62-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-416"><a href="#cb62-416" aria-hidden="true" tabindex="-1"></a>This section trains and compares candidate models. Select models using discrimination, calibration, stability, and clinical utility together.</span>
+<span id="cb62-417"><a href="#cb62-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-418"><a href="#cb62-418" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb62-419"><a href="#cb62-419" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-14</span></span>
+<span id="cb62-420"><a href="#cb62-420" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
+<span id="cb62-421"><a href="#cb62-421" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb62-426"><a href="#cb62-426" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Model Evaluation</span></span>
+<span id="cb62-427"><a href="#cb62-427" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a>best_lrn<span class="sc">$</span>predict_type <span class="ot">&lt;-</span> <span class="st">"distr"</span></span>
+<span id="cb62-429"><a href="#cb62-429" aria-hidden="true" tabindex="-1"></a>train_perf <span class="ot">&lt;-</span> <span class="fu">surv_evaluate_model</span>(best_lrn, train_task,</span>
+<span id="cb62-430"><a href="#cb62-430" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">measures =</span> <span class="fu">list</span>(<span class="fu">msr</span>(<span class="st">"surv.cindex"</span>), <span class="fu">msr</span>(<span class="st">"surv.graf"</span>)))</span>
+<span id="cb62-431"><a href="#cb62-431" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Training apparent C-index:"</span>, <span class="fu">round</span>(train_perf<span class="sc">$</span>surv.cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-432"><a href="#cb62-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-433"><a href="#cb62-433" aria-hidden="true" tabindex="-1"></a>val_pred <span class="ot">&lt;-</span> best_lrn<span class="sc">$</span><span class="fu">predict</span>(val_task)</span>
+<span id="cb62-434"><a href="#cb62-434" aria-hidden="true" tabindex="-1"></a>val_cindex <span class="ot">&lt;-</span> val_pred<span class="sc">$</span><span class="fu">score</span>(<span class="fu">msr</span>(<span class="st">"surv.cindex"</span>))</span>
+<span id="cb62-435"><a href="#cb62-435" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Validation C-index:"</span>, <span class="fu">round</span>(val_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-436"><a href="#cb62-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-437"><a href="#cb62-437" aria-hidden="true" tabindex="-1"></a><span class="co"># Save performance metrics</span></span>
+<span id="cb62-438"><a href="#cb62-438" aria-hidden="true" tabindex="-1"></a>perf_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb62-439"><a href="#cb62-439" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dataset =</span> <span class="fu">c</span>(<span class="st">"Training"</span>, <span class="st">"Validation"</span>),</span>
+<span id="cb62-440"><a href="#cb62-440" aria-hidden="true" tabindex="-1"></a>  <span class="at">C_index =</span> <span class="fu">c</span>(train_perf<span class="sc">$</span>surv.cindex, val_cindex)</span>
+<span id="cb62-441"><a href="#cb62-441" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-442"><a href="#cb62-442" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(perf_df, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"performance.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-443"><a href="#cb62-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-444"><a href="#cb62-444" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.1 KM Curves ----</span></span>
+<span id="cb62-445"><a href="#cb62-445" aria-hidden="true" tabindex="-1"></a><span class="co"># IMPORTANT: The following KM curves and the cutoff derived from the training set</span></span>
+<span id="cb62-446"><a href="#cb62-446" aria-hidden="true" tabindex="-1"></a><span class="co"># are APPARENT (optimistic) performance. They are useful for internal exploration</span></span>
+<span id="cb62-447"><a href="#cb62-447" aria-hidden="true" tabindex="-1"></a><span class="co"># but MUST be re‑evaluated on an independent validation set before reporting.</span></span>
+<span id="cb62-448"><a href="#cb62-448" aria-hidden="true" tabindex="-1"></a>pred_train <span class="ot">&lt;-</span> best_lrn<span class="sc">$</span><span class="fu">predict</span>(train_task)</span>
+<span id="cb62-449"><a href="#cb62-449" aria-hidden="true" tabindex="-1"></a>cut_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(train_task<span class="sc">$</span><span class="fu">data</span>())</span>
+<span id="cb62-450"><a href="#cb62-450" aria-hidden="true" tabindex="-1"></a>cut_df<span class="sc">$</span>risk <span class="ot">&lt;-</span> pred_train<span class="sc">$</span>crank</span>
+<span id="cb62-451"><a href="#cb62-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-452"><a href="#cb62-452" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute optimal cutoff using multiple methods.</span></span>
+<span id="cb62-453"><a href="#cb62-453" aria-hidden="true" tabindex="-1"></a><span class="co"># For publication, consider using 'maxstat' (Hothorn &amp; Lausen, 2003) with</span></span>
+<span id="cb62-454"><a href="#cb62-454" aria-hidden="true" tabindex="-1"></a><span class="co"># bootstrap resampling to obtain a stable, data‑driven threshold.</span></span>
+<span id="cb62-455"><a href="#cb62-455" aria-hidden="true" tabindex="-1"></a><span class="co"># The 'p_optimize' method is also provided for historical consistency.</span></span>
+<span id="cb62-456"><a href="#cb62-456" aria-hidden="true" tabindex="-1"></a>cut_res <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb62-457"><a href="#cb62-457" aria-hidden="true" tabindex="-1"></a>  <span class="fu">surv_cutpoint</span>(cut_df, <span class="at">time =</span> <span class="st">"time"</span>, <span class="at">event =</span> <span class="st">"status"</span>, <span class="at">variables =</span> <span class="st">"risk"</span>)</span>
+<span id="cb62-458"><a href="#cb62-458" aria-hidden="true" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb62-459"><a href="#cb62-459" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"surv_cutpoint failed: "</span>, e<span class="sc">$</span>message, <span class="st">". Using median split."</span>)</span>
+<span id="cb62-460"><a href="#cb62-460" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">cutpoint =</span> <span class="fu">data.frame</span>(<span class="at">cutpoint =</span> <span class="fu">median</span>(cut_df<span class="sc">$</span>risk, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb62-461"><a href="#cb62-461" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb62-462"><a href="#cb62-462" aria-hidden="true" tabindex="-1"></a>opt_cutoff <span class="ot">&lt;-</span> cut_res<span class="sc">$</span>cutpoint<span class="sc">$</span>cutpoint</span>
+<span id="cb62-463"><a href="#cb62-463" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Optimal cutoff (from surv_cutpoint):"</span>, <span class="fu">round</span>(opt_cutoff, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-464"><a href="#cb62-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-465"><a href="#cb62-465" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate KM plots for different cutoff methods</span></span>
+<span id="cb62-466"><a href="#cb62-466" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: 'p_optimize' and 'maxstat' use bootstrap/maximally selected statistics</span></span>
+<span id="cb62-467"><a href="#cb62-467" aria-hidden="true" tabindex="-1"></a><span class="co"># and are exploratory; their p‑values should not be used as confirmatory.</span></span>
+<span id="cb62-468"><a href="#cb62-468" aria-hidden="true" tabindex="-1"></a>km_median    <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"median"</span>, <span class="at">risk_table =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-469"><a href="#cb62-469" aria-hidden="true" tabindex="-1"></a>km_tertile   <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"tertile"</span>)</span>
+<span id="cb62-470"><a href="#cb62-470" aria-hidden="true" tabindex="-1"></a>km_quartile  <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"quartile"</span>)</span>
+<span id="cb62-471"><a href="#cb62-471" aria-hidden="true" tabindex="-1"></a>km_p_optimize <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"p_optimize"</span>,</span>
+<span id="cb62-472"><a href="#cb62-472" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">n_boot =</span> <span class="dv">100</span>, <span class="at">fraction =</span> <span class="fl">0.7</span>)</span>
+<span id="cb62-473"><a href="#cb62-473" aria-hidden="true" tabindex="-1"></a>km_maxstat   <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, train_task, <span class="st">"maxstat"</span>,</span>
+<span id="cb62-474"><a href="#cb62-474" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">n_boot =</span> <span class="dv">100</span>, <span class="at">minprop =</span> <span class="fl">0.3</span>)</span>
+<span id="cb62-475"><a href="#cb62-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-476"><a href="#cb62-476" aria-hidden="true" tabindex="-1"></a><span class="co"># Save training KM plots</span></span>
+<span id="cb62-477"><a href="#cb62-477" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_median)</span>
+<span id="cb62-478"><a href="#cb62-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-479"><a href="#cb62-479" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_tertile)</span>
+<span id="cb62-480"><a href="#cb62-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-481"><a href="#cb62-481" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_quartile)</span>
+<span id="cb62-482"><a href="#cb62-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-483"><a href="#cb62-483" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_p_optimize)</span>
+<span id="cb62-484"><a href="#cb62-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-485"><a href="#cb62-485" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_maxstat)</span>
+<span id="cb62-486"><a href="#cb62-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-487"><a href="#cb62-487" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply a fixed cutoff (here we use the median from training) to the validation set</span></span>
+<span id="cb62-488"><a href="#cb62-488" aria-hidden="true" tabindex="-1"></a>train_cutoff <span class="ot">&lt;-</span> <span class="fu">get_cf</span>(km_median)</span>
+<span id="cb62-489"><a href="#cb62-489" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">is.null</span>(train_cutoff)) train_cutoff <span class="ot">&lt;-</span> opt_cutoff</span>
+<span id="cb62-490"><a href="#cb62-490" aria-hidden="true" tabindex="-1"></a>km_val_fixed <span class="ot">&lt;-</span> <span class="fu">surv_plot_risk_km</span>(best_lrn, val_task,</span>
+<span id="cb62-491"><a href="#cb62-491" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">cutoff_method =</span> <span class="st">"custom"</span>,</span>
+<span id="cb62-492"><a href="#cb62-492" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">custom_cutoffs =</span> train_cutoff,</span>
+<span id="cb62-493"><a href="#cb62-493" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">risk_table =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-494"><a href="#cb62-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-495"><a href="#cb62-495" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(km_val_fixed)</span>
+<span id="cb62-496"><a href="#cb62-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-497"><a href="#cb62-497" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.2 Subgroup Forest (FIXED: use subsetted prog) ----</span></span>
+<span id="cb62-498"><a href="#cb62-498" aria-hidden="true" tabindex="-1"></a><span class="co"># Subset prog to training samples to match train_task rows</span></span>
+<span id="cb62-499"><a href="#cb62-499" aria-hidden="true" tabindex="-1"></a>train_prog <span class="ot">&lt;-</span> prog</span>
+<span id="cb62-500"><a href="#cb62-500" aria-hidden="true" tabindex="-1"></a>train_prog<span class="sc">@</span>clean.data <span class="ot">&lt;-</span> prog<span class="sc">@</span>clean.data[train_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb62-501"><a href="#cb62-501" aria-hidden="true" tabindex="-1"></a>train_prog<span class="sc">@</span>info.data <span class="ot">&lt;-</span> prog<span class="sc">@</span>info.data[train_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb62-502"><a href="#cb62-502" aria-hidden="true" tabindex="-1"></a>train_prog<span class="sc">@</span>survival.data <span class="ot">&lt;-</span> prog<span class="sc">@</span>survival.data[train_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb62-503"><a href="#cb62-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-504"><a href="#cb62-504" aria-hidden="true" tabindex="-1"></a>clinical_cols <span class="ot">&lt;-</span> <span class="fu">colnames</span>(train_prog<span class="sc">@</span>info.data)</span>
+<span id="cb62-505"><a href="#cb62-505" aria-hidden="true" tabindex="-1"></a><span class="co"># info.data names are normalised by CreateStatObject(): spaces and dots become</span></span>
+<span id="cb62-506"><a href="#cb62-506" aria-hidden="true" tabindex="-1"></a><span class="co"># underscores. Passing the dotted spelling would make intersect() drop</span></span>
+<span id="cb62-507"><a href="#cb62-507" aria-hidden="true" tabindex="-1"></a><span class="co"># everything except "Gender" and silently shrink the subgroup forest.</span></span>
+<span id="cb62-508"><a href="#cb62-508" aria-hidden="true" tabindex="-1"></a>candidate_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gender"</span>, <span class="st">"Tobacco_smoking_history"</span>, <span class="st">"Drinking_history"</span>, <span class="st">"TNM_Stage"</span>)</span>
+<span id="cb62-509"><a href="#cb62-509" aria-hidden="true" tabindex="-1"></a>subgroup_vars <span class="ot">&lt;-</span> <span class="fu">intersect</span>(candidate_vars, clinical_cols)</span>
+<span id="cb62-510"><a href="#cb62-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-511"><a href="#cb62-511" aria-hidden="true" tabindex="-1"></a>forest <span class="ot">&lt;-</span> <span class="fu">surv_plot_subgroup_forest</span>(</span>
+<span id="cb62-512"><a href="#cb62-512" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> best_lrn,</span>
+<span id="cb62-513"><a href="#cb62-513" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> train_task,</span>
+<span id="cb62-514"><a href="#cb62-514" aria-hidden="true" tabindex="-1"></a>  <span class="at">subgroup_vars =</span> subgroup_vars,</span>
+<span id="cb62-515"><a href="#cb62-515" aria-hidden="true" tabindex="-1"></a>  <span class="at">prog =</span> train_prog,</span>
+<span id="cb62-516"><a href="#cb62-516" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb62-517"><a href="#cb62-517" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_dir =</span> <span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>),</span>
+<span id="cb62-518"><a href="#cb62-518" aria-hidden="true" tabindex="-1"></a>  <span class="at">file_name =</span> <span class="st">"subgroup_forest.pdf"</span></span>
+<span id="cb62-519"><a href="#cb62-519" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-520"><a href="#cb62-520" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(forest)</span>
+<span id="cb62-521"><a href="#cb62-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-522"><a href="#cb62-522" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.3 Time-dependent AUC ----</span></span>
+<span id="cb62-523"><a href="#cb62-523" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: These are also apparent performance when computed on the training set.</span></span>
+<span id="cb62-524"><a href="#cb62-524" aria-hidden="true" tabindex="-1"></a>auc_train <span class="ot">&lt;-</span> <span class="fu">surv_plot_time_dependent_auc</span>(best_lrn, train_task)</span>
+<span id="cb62-525"><a href="#cb62-525" aria-hidden="true" tabindex="-1"></a>auc_val   <span class="ot">&lt;-</span> <span class="fu">surv_plot_time_dependent_auc</span>(best_lrn, val_task)</span>
+<span id="cb62-526"><a href="#cb62-526" aria-hidden="true" tabindex="-1"></a>auc_cmp   <span class="ot">&lt;-</span> <span class="fu">surv_plot_comparison_auc</span>(best_lrn, train_task, val_task)</span>
+<span id="cb62-527"><a href="#cb62-527" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"AUC_comparison.pdf"</span>), auc_cmp, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
+<span id="cb62-528"><a href="#cb62-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-529"><a href="#cb62-529" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.4 Calibration ----</span></span>
+<span id="cb62-530"><a href="#cb62-530" aria-hidden="true" tabindex="-1"></a>cal_train <span class="ot">&lt;-</span> <span class="fu">surv_plot_calibration</span>(best_lrn, train_task, <span class="at">time_point =</span> <span class="dv">50</span>)</span>
+<span id="cb62-531"><a href="#cb62-531" aria-hidden="true" tabindex="-1"></a>cal_cmp   <span class="ot">&lt;-</span> <span class="fu">surv_plot_comparison_calibration</span>(best_lrn, train_task, val_task, <span class="at">time_point =</span> <span class="dv">50</span>)</span>
+<span id="cb62-532"><a href="#cb62-532" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"Calibration_train.pdf"</span>), cal_train, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-533"><a href="#cb62-533" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"03_evaluation"</span>), <span class="st">"Calibration_comparison.pdf"</span>), cal_cmp, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-534"><a href="#cb62-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-535"><a href="#cb62-535" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.5 External Validation (using validation set) ----</span></span>
+<span id="cb62-536"><a href="#cb62-536" aria-hidden="true" tabindex="-1"></a>val_data_ext <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(task_full<span class="sc">$</span><span class="fu">data</span>())[val_idx, selected_feats, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb62-537"><a href="#cb62-537" aria-hidden="true" tabindex="-1"></a>val_data_ext<span class="sc">$</span>time <span class="ot">&lt;-</span> task_full<span class="sc">$</span><span class="fu">data</span>()[[task_full<span class="sc">$</span>target_names[<span class="dv">1</span>]]][val_idx]</span>
+<span id="cb62-538"><a href="#cb62-538" aria-hidden="true" tabindex="-1"></a>val_data_ext<span class="sc">$</span>status <span class="ot">&lt;-</span> task_full<span class="sc">$</span><span class="fu">data</span>()[[task_full<span class="sc">$</span>target_names[<span class="dv">2</span>]]][val_idx]</span>
+<span id="cb62-539"><a href="#cb62-539" aria-hidden="true" tabindex="-1"></a>val_res <span class="ot">&lt;-</span> <span class="fu">surv_predict_on_validation</span>(best_lrn, val_data_ext, train_task)</span>
+<span id="cb62-540"><a href="#cb62-540" aria-hidden="true" tabindex="-1"></a>val_cindex_alt <span class="ot">&lt;-</span> val_res<span class="sc">$</span>prediction<span class="sc">$</span><span class="fu">score</span>(<span class="fu">msr</span>(<span class="st">"surv.cindex"</span>))</span>
+<span id="cb62-541"><a href="#cb62-541" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Validation C-index (alt):"</span>, <span class="fu">round</span>(val_cindex_alt, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-542"><a href="#cb62-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-543"><a href="#cb62-543" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4.6 Nomogram ----</span></span>
+<span id="cb62-544"><a href="#cb62-544" aria-hidden="true" tabindex="-1"></a><span class="co"># The revized surv_generate_nomogram now includes a proportional hazards test</span></span>
+<span id="cb62-545"><a href="#cb62-545" aria-hidden="true" tabindex="-1"></a><span class="co"># (cox.zph) which will be printed to the console. If any variable violates</span></span>
+<span id="cb62-546"><a href="#cb62-546" aria-hidden="true" tabindex="-1"></a><span class="co"># the PH assumption, a warning is shown.</span></span>
+<span id="cb62-547"><a href="#cb62-547" aria-hidden="true" tabindex="-1"></a>nom <span class="ot">&lt;-</span> <span class="fu">surv_generate_nomogram</span>(train_task,</span>
+<span id="cb62-548"><a href="#cb62-548" aria-hidden="true" tabindex="-1"></a>                              <span class="at">selected_features =</span> <span class="fu">head</span>(selected_feats, <span class="dv">5</span>),</span>
+<span id="cb62-549"><a href="#cb62-549" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_points =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">25</span>, <span class="dv">38</span>),</span>
+<span id="cb62-550"><a href="#cb62-550" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time_unit =</span> <span class="st">"months"</span>)</span>
+<span id="cb62-551"><a href="#cb62-551" aria-hidden="true" tabindex="-1"></a><span class="co"># Nomogram is drawn; optionally save via pdf().</span></span>
+<span id="cb62-552"><a href="#cb62-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-553"><a href="#cb62-553" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-554"><a href="#cb62-554" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb62-555"><a href="#cb62-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-556"><a href="#cb62-556" aria-hidden="true" tabindex="-1"></a><span class="fu">### 5 Robustness Analysis</span></span>
+<span id="cb62-557"><a href="#cb62-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-558"><a href="#cb62-558" aria-hidden="true" tabindex="-1"></a>This section tests sensitivity to sampling, censoring, and feature changes. Robust conclusions should remain similar under reasonable perturbations.</span>
+<span id="cb62-559"><a href="#cb62-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-560"><a href="#cb62-560" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb62-561"><a href="#cb62-561" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-15</span></span>
+<span id="cb62-562"><a href="#cb62-562" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
+<span id="cb62-563"><a href="#cb62-563" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-564"><a href="#cb62-564" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb62-565"><a href="#cb62-565" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb62-566"><a href="#cb62-566" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb62-567"><a href="#cb62-567" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb62-568"><a href="#cb62-568" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Robustness Analysis</span></span>
+<span id="cb62-569"><a href="#cb62-569" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-570"><a href="#cb62-570" aria-hidden="true" tabindex="-1"></a>stab <span class="ot">&lt;-</span> <span class="fu">surv_analyze_feature_stability</span>(train_task, <span class="st">"time"</span>, <span class="st">"status"</span>, <span class="at">n_repeat =</span> <span class="dv">20</span>, <span class="at">alpha =</span> <span class="dv">1</span>)</span>
+<span id="cb62-571"><a href="#cb62-571" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Stability index:"</span>, <span class="fu">round</span>(stab<span class="sc">$</span>stability_index, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-572"><a href="#cb62-572" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"stability_plot.pdf"</span>), stab<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-573"><a href="#cb62-573" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(stab<span class="sc">$</span>frequencies, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"stability_frequencies.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-574"><a href="#cb62-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-575"><a href="#cb62-575" aria-hidden="true" tabindex="-1"></a>abl <span class="ot">&lt;-</span> <span class="fu">surv_analyze_feature_ablation</span>(train_task, best_id, selected_feats)</span>
+<span id="cb62-576"><a href="#cb62-576" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"ablation_plot.pdf"</span>), abl<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-577"><a href="#cb62-577" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(abl<span class="sc">$</span>results, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"ablation_results.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-578"><a href="#cb62-578" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-579"><a href="#cb62-579" aria-hidden="true" tabindex="-1"></a>sens_sample <span class="ot">&lt;-</span> <span class="fu">surv_analyze_model_sensitivity</span>(train_task, best_id, <span class="at">analysis_type =</span> <span class="st">"sample_size"</span>)</span>
+<span id="cb62-580"><a href="#cb62-580" aria-hidden="true" tabindex="-1"></a>sens_censor <span class="ot">&lt;-</span> <span class="fu">surv_analyze_model_sensitivity</span>(train_task, best_id, <span class="at">analysis_type =</span> <span class="st">"censoring"</span>)</span>
+<span id="cb62-581"><a href="#cb62-581" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_sample.pdf"</span>), sens_sample<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
+<span id="cb62-582"><a href="#cb62-582" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_censor.pdf"</span>), sens_censor<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
+<span id="cb62-583"><a href="#cb62-583" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(sens_sample<span class="sc">$</span>results, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_sample.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-584"><a href="#cb62-584" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(sens_censor<span class="sc">$</span>results, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"04_robustness"</span>), <span class="st">"sensitivity_censor.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-585"><a href="#cb62-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-586"><a href="#cb62-586" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-587"><a href="#cb62-587" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb62-588"><a href="#cb62-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-589"><a href="#cb62-589" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6 DCA &amp; SHAP</span></span>
+<span id="cb62-590"><a href="#cb62-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-591"><a href="#cb62-591" aria-hidden="true" tabindex="-1"></a>This section examines clinical utility and model explanations. Explanatory plots describe model behavior and do not establish causality.</span>
+<span id="cb62-592"><a href="#cb62-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-593"><a href="#cb62-593" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb62-594"><a href="#cb62-594" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-16</span></span>
+<span id="cb62-595"><a href="#cb62-595" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
+<span id="cb62-596"><a href="#cb62-596" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-597"><a href="#cb62-597" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb62-598"><a href="#cb62-598" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb62-599"><a href="#cb62-599" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb62-600"><a href="#cb62-600" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb62-601"><a href="#cb62-601" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. DCA &amp; SHAP</span></span>
+<span id="cb62-602"><a href="#cb62-602" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-603"><a href="#cb62-603" aria-hidden="true" tabindex="-1"></a>val_time <span class="ot">&lt;-</span> val_task<span class="sc">$</span><span class="fu">data</span>()[[val_task<span class="sc">$</span>target_names[<span class="dv">1</span>]]]</span>
+<span id="cb62-604"><a href="#cb62-604" aria-hidden="true" tabindex="-1"></a>val_status <span class="ot">&lt;-</span> val_task<span class="sc">$</span><span class="fu">data</span>()[[val_task<span class="sc">$</span>target_names[<span class="dv">2</span>]]]</span>
+<span id="cb62-605"><a href="#cb62-605" aria-hidden="true" tabindex="-1"></a>event_times <span class="ot">&lt;-</span> val_time[val_status <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb62-606"><a href="#cb62-606" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(event_times) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">stop</span>(<span class="st">"No events in validation set."</span>)</span>
+<span id="cb62-607"><a href="#cb62-607" aria-hidden="true" tabindex="-1"></a>eval_time <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">quantile</span>(event_times, <span class="fl">0.5</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">0</span>)</span>
+<span id="cb62-608"><a href="#cb62-608" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (eval_time <span class="sc">&lt;</span> <span class="fu">min</span>(event_times)) eval_time <span class="ot">&lt;-</span> <span class="fu">min</span>(event_times)</span>
+<span id="cb62-609"><a href="#cb62-609" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Using eval_time ="</span>, eval_time, <span class="st">"for DCA</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-610"><a href="#cb62-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-611"><a href="#cb62-611" aria-hidden="true" tabindex="-1"></a>dca_res <span class="ot">&lt;-</span> <span class="fu">plot_dca_survival</span>(</span>
+<span id="cb62-612"><a href="#cb62-612" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(<span class="st">"Tuned"</span> <span class="ot">=</span> best_lrn),</span>
+<span id="cb62-613"><a href="#cb62-613" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> val_task,</span>
+<span id="cb62-614"><a href="#cb62-614" aria-hidden="true" tabindex="-1"></a>  <span class="at">eval_time =</span> eval_time,</span>
+<span id="cb62-615"><a href="#cb62-615" aria-hidden="true" tabindex="-1"></a>  <span class="at">clin_range =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>),</span>
+<span id="cb62-616"><a href="#cb62-616" aria-hidden="true" tabindex="-1"></a>  <span class="at">print_stats =</span> <span class="cn">TRUE</span></span>
+<span id="cb62-617"><a href="#cb62-617" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-618"><a href="#cb62-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-619"><a href="#cb62-619" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"dca_plot.pdf"</span>), dca_res<span class="sc">$</span>plot, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">5</span>)</span>
+<span id="cb62-620"><a href="#cb62-620" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dca_res<span class="sc">$</span>table, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"dca_table.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-621"><a href="#cb62-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-622"><a href="#cb62-622" aria-hidden="true" tabindex="-1"></a>shap_global <span class="ot">&lt;-</span> <span class="fu">surv_explain_shap</span>(</span>
+<span id="cb62-623"><a href="#cb62-623" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> best_lrn,</span>
+<span id="cb62-624"><a href="#cb62-624" aria-hidden="true" tabindex="-1"></a>  <span class="at">task =</span> val_task,</span>
+<span id="cb62-625"><a href="#cb62-625" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"global"</span>,</span>
+<span id="cb62-626"><a href="#cb62-626" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_explain =</span> <span class="dv">30</span>,</span>
+<span id="cb62-627"><a href="#cb62-627" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_background =</span> <span class="dv">10</span>,</span>
+<span id="cb62-628"><a href="#cb62-628" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_timepoints =</span> <span class="dv">10</span>,</span>
+<span id="cb62-629"><a href="#cb62-629" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_top_features =</span> <span class="dv">6</span>,</span>
+<span id="cb62-630"><a href="#cb62-630" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb62-631"><a href="#cb62-631" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-632"><a href="#cb62-632" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_global_bar.pdf"</span>), shap_global<span class="sc">$</span>plots<span class="sc">$</span>bar_plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-633"><a href="#cb62-633" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(shap_global<span class="sc">$</span>plots<span class="sc">$</span>line_plot)) {</span>
+<span id="cb62-634"><a href="#cb62-634" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_global_line.pdf"</span>), shap_global<span class="sc">$</span>plots<span class="sc">$</span>line_plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-635"><a href="#cb62-635" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-636"><a href="#cb62-636" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(shap_global<span class="sc">$</span>shap_long, <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_values_global.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-637"><a href="#cb62-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-638"><a href="#cb62-638" aria-hidden="true" tabindex="-1"></a>beeswarm_plot <span class="ot">&lt;-</span> <span class="fu">surv_plot_shap_beeswarm</span>(shap_global, <span class="at">top_n =</span> <span class="dv">6</span>, <span class="at">method =</span> <span class="st">"beeswarm"</span>,</span>
+<span id="cb62-639"><a href="#cb62-639" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">title =</span> <span class="st">"Global SurvSHAP (validation set)"</span>)</span>
+<span id="cb62-640"><a href="#cb62-640" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"05_xai"</span>), <span class="st">"shap_beeswarm.pdf"</span>), beeswarm_plot, <span class="at">width =</span> <span class="dv">9</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb62-641"><a href="#cb62-641" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-642"><a href="#cb62-642" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-643"><a href="#cb62-643" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb62-644"><a href="#cb62-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-645"><a href="#cb62-645" aria-hidden="true" tabindex="-1"></a><span class="fu">### 7 Save Final PrognosiX Object</span></span>
+<span id="cb62-646"><a href="#cb62-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-647"><a href="#cb62-647" aria-hidden="true" tabindex="-1"></a>This section saves model objects, tables, and figures for reproducibility, review, and reuse.</span>
+<span id="cb62-648"><a href="#cb62-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-649"><a href="#cb62-649" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb62-650"><a href="#cb62-650" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-17</span></span>
+<span id="cb62-651"><a href="#cb62-651" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
+<span id="cb62-652"><a href="#cb62-652" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-653"><a href="#cb62-653" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb62-654"><a href="#cb62-654" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb62-655"><a href="#cb62-655" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb62-656"><a href="#cb62-656" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb62-657"><a href="#cb62-657" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Save Final PrognosiX Object</span></span>
+<span id="cb62-658"><a href="#cb62-658" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-659"><a href="#cb62-659" aria-hidden="true" tabindex="-1"></a>prog<span class="sc">@</span>best.model <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb62-660"><a href="#cb62-660" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner_id =</span> best_id,</span>
+<span id="cb62-661"><a href="#cb62-661" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> best_lrn,</span>
+<span id="cb62-662"><a href="#cb62-662" aria-hidden="true" tabindex="-1"></a>  <span class="at">best_params =</span> tune<span class="sc">$</span>best_params,</span>
+<span id="cb62-663"><a href="#cb62-663" aria-hidden="true" tabindex="-1"></a>  <span class="at">cv_cindex =</span> cv_cindex,</span>
+<span id="cb62-664"><a href="#cb62-664" aria-hidden="true" tabindex="-1"></a>  <span class="at">features =</span> selected_feats,</span>
+<span id="cb62-665"><a href="#cb62-665" aria-hidden="true" tabindex="-1"></a>  <span class="at">cutoff =</span> opt_cutoff,</span>
+<span id="cb62-666"><a href="#cb62-666" aria-hidden="true" tabindex="-1"></a>  <span class="at">decision_type =</span> <span class="st">"binary"</span>,</span>
+<span id="cb62-667"><a href="#cb62-667" aria-hidden="true" tabindex="-1"></a>  <span class="at">train_cols =</span> train_task<span class="sc">$</span>feature_names</span>
+<span id="cb62-668"><a href="#cb62-668" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-669"><a href="#cb62-669" aria-hidden="true" tabindex="-1"></a>prog<span class="sc">@</span>subgroup.risk <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb62-670"><a href="#cb62-670" aria-hidden="true" tabindex="-1"></a>  <span class="at">benchmark_table =</span> bmr1<span class="sc">$</span>table,</span>
+<span id="cb62-671"><a href="#cb62-671" aria-hidden="true" tabindex="-1"></a>  <span class="at">stability =</span> stab,</span>
+<span id="cb62-672"><a href="#cb62-672" aria-hidden="true" tabindex="-1"></a>  <span class="at">ablation =</span> abl,</span>
+<span id="cb62-673"><a href="#cb62-673" aria-hidden="true" tabindex="-1"></a>  <span class="at">validation =</span> <span class="fu">list</span>(<span class="at">cindex =</span> val_cindex, <span class="at">n =</span> val_task<span class="sc">$</span>nrow)</span>
+<span id="cb62-674"><a href="#cb62-674" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-675"><a href="#cb62-675" aria-hidden="true" tabindex="-1"></a>prog<span class="sc">@</span>split.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">train_idx =</span> train_idx, <span class="at">val_idx =</span> val_idx)</span>
+<span id="cb62-676"><a href="#cb62-676" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(prog, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="fu">sub_dir</span>(<span class="st">"data"</span>), <span class="st">"prog_obj_final.rds"</span>))</span>
+<span id="cb62-677"><a href="#cb62-677" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-678"><a href="#cb62-678" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-679"><a href="#cb62-679" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb62-680"><a href="#cb62-680" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-681"><a href="#cb62-681" aria-hidden="true" tabindex="-1"></a><span class="fu">### 8 Deployment: Prediction for New Samples</span></span>
+<span id="cb62-682"><a href="#cb62-682" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-683"><a href="#cb62-683" aria-hidden="true" tabindex="-1"></a>This section applies the trained object to new samples. Validate input format, performance, and target population in an independent cohort before deployment.</span>
+<span id="cb62-684"><a href="#cb62-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-685"><a href="#cb62-685" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb62-686"><a href="#cb62-686" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-19</span></span>
+<span id="cb62-687"><a href="#cb62-687" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
+<span id="cb62-688"><a href="#cb62-688" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-689"><a href="#cb62-689" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb62-690"><a href="#cb62-690" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb62-691"><a href="#cb62-691" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb62-692"><a href="#cb62-692" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb62-693"><a href="#cb62-693" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Deployment: Prediction for New Samples</span></span>
+<span id="cb62-694"><a href="#cb62-694" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-695"><a href="#cb62-695" aria-hidden="true" tabindex="-1"></a><span class="co"># Instead of the veteran example, use actual rows from your training data</span></span>
+<span id="cb62-696"><a href="#cb62-696" aria-hidden="true" tabindex="-1"></a><span class="co"># (or real new data) that contain all selected features.</span></span>
+<span id="cb62-697"><a href="#cb62-697" aria-hidden="true" tabindex="-1"></a><span class="co"># For demonstration, we take the first 2 rows of the original feature matrix.</span></span>
+<span id="cb62-698"><a href="#cb62-698" aria-hidden="true" tabindex="-1"></a><span class="co">#new_patients &lt;- data.frame(</span></span>
+<span id="cb62-699"><a href="#cb62-699" aria-hidden="true" tabindex="-1"></a><span class="co">#  Mean_corpuscular_hemoglobin_concentration = c(33, 34),</span></span>
+<span id="cb62-700"><a href="#cb62-700" aria-hidden="true" tabindex="-1"></a><span class="co">#  Basophil_count = c(0.02, 0.03),</span></span>
+<span id="cb62-701"><a href="#cb62-701" aria-hidden="true" tabindex="-1"></a><span class="co">#  Monocytes = c(0.6, 0.7),</span></span>
+<span id="cb62-702"><a href="#cb62-702" aria-hidden="true" tabindex="-1"></a><span class="co">#  Neutrophilic_granulocyte = c(4.2, 5.1),</span></span>
+<span id="cb62-703"><a href="#cb62-703" aria-hidden="true" tabindex="-1"></a><span class="co">#  Red_blood_cell_distribution_width_CV = c(12.3, 11.8),</span></span>
+<span id="cb62-704"><a href="#cb62-704" aria-hidden="true" tabindex="-1"></a><span class="co">#  Mean_red_blood_cell_volume = c(89, 92),</span></span>
+<span id="cb62-705"><a href="#cb62-705" aria-hidden="true" tabindex="-1"></a><span class="co">#  Lymphocytes_count = c(1.8, 2.1),</span></span>
+<span id="cb62-706"><a href="#cb62-706" aria-hidden="true" tabindex="-1"></a><span class="co">#  Platelet_volume_distribution_width = c(12.0, 13.1),</span></span>
+<span id="cb62-707"><a href="#cb62-707" aria-hidden="true" tabindex="-1"></a><span class="co">#  Lymphocytes = c(1.8, 2.1),   # note: this may be same as Lymphocytes_count? check your data</span></span>
+<span id="cb62-708"><a href="#cb62-708" aria-hidden="true" tabindex="-1"></a><span class="co">#  Monocytes_count = c(0.6, 0.7),</span></span>
+<span id="cb62-709"><a href="#cb62-709" aria-hidden="true" tabindex="-1"></a><span class="co">#  Neutrophilic_granulocyte_count = c(4.2, 5.1),</span></span>
+<span id="cb62-710"><a href="#cb62-710" aria-hidden="true" tabindex="-1"></a><span class="co">#  Mean_platelet_volume = c(10.5, 11.0),</span></span>
+<span id="cb62-711"><a href="#cb62-711" aria-hidden="true" tabindex="-1"></a><span class="co">#  row.names = c("patient_1", "patient_2")</span></span>
+<span id="cb62-712"><a href="#cb62-712" aria-hidden="true" tabindex="-1"></a><span class="co">#)</span></span>
+<span id="cb62-713"><a href="#cb62-713" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-714"><a href="#cb62-714" aria-hidden="true" tabindex="-1"></a><span class="co">#risk_scores &lt;- predict_prognosix(prog, new_patients, impute = TRUE)</span></span>
+<span id="cb62-715"><a href="#cb62-715" aria-hidden="true" tabindex="-1"></a><span class="co">#pred_groups_med &lt;- predict_risk_groups(prog, new_patients, cutoff_method = "median")</span></span>
+<span id="cb62-716"><a href="#cb62-716" aria-hidden="true" tabindex="-1"></a><span class="co">#pred_groups_cus &lt;- predict_risk_groups(prog, new_patients,</span></span>
+<span id="cb62-717"><a href="#cb62-717" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       cutoff_method = "custom",</span></span>
+<span id="cb62-718"><a href="#cb62-718" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       custom_cutoffs = opt_cutoff)</span></span>
+<span id="cb62-719"><a href="#cb62-719" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Risk scores:\n"); print(risk_scores)</span></span>
+<span id="cb62-720"><a href="#cb62-720" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Median groups:\n"); print(pred_groups_med)</span></span>
+<span id="cb62-721"><a href="#cb62-721" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Custom groups:\n"); print(pred_groups_cus)</span></span>
+<span id="cb62-722"><a href="#cb62-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-723"><a href="#cb62-723" aria-hidden="true" tabindex="-1"></a>manager <span class="ot">&lt;-</span> <span class="fu">New_Prog_Manager</span>(prog)</span>
+<span id="cb62-724"><a href="#cb62-724" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-725"><a href="#cb62-725" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interactive</span>()) {</span>
+<span id="cb62-726"><a href="#cb62-726" aria-hidden="true" tabindex="-1"></a>  <span class="fu">use_app_theme_grey</span>()</span>
+<span id="cb62-727"><a href="#cb62-727" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_prog_app_text</span>(</span>
+<span id="cb62-728"><a href="#cb62-728" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Survival Risk Predictor"</span>,</span>
+<span id="cb62-729"><a href="#cb62-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">citation_text =</span> <span class="st">"Data: PMID37633276_DIA_plasmaproomic cohort."</span></span>
+<span id="cb62-730"><a href="#cb62-730" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb62-731"><a href="#cb62-731" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_prog_app_theme</span>(</span>
+<span id="cb62-732"><a href="#cb62-732" aria-hidden="true" tabindex="-1"></a>    <span class="at">primary_color =</span> <span class="st">"#2c7fb8"</span>, <span class="at">background_color =</span> <span class="st">"#f0f4f8"</span>, <span class="at">sidebar_color =</span> <span class="st">"#e9ecef"</span>,</span>
+<span id="cb62-733"><a href="#cb62-733" aria-hidden="true" tabindex="-1"></a>    <span class="at">box_background =</span> <span class="st">"#ffffff"</span>, <span class="at">label_color =</span> <span class="st">"#2c7fb8"</span>,</span>
+<span id="cb62-734"><a href="#cb62-734" aria-hidden="true" tabindex="-1"></a>    <span class="at">run_button_gradient_start =</span> <span class="st">"#2c7fb8"</span>, <span class="at">run_button_gradient_end =</span> <span class="st">"#1d4e6e"</span>,</span>
+<span id="cb62-735"><a href="#cb62-735" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_high_color =</span> <span class="st">"#d9534f"</span>, <span class="at">risk_medium_color =</span> <span class="st">"#f0ad4e"</span>, <span class="at">risk_low_color =</span> <span class="st">"#5cb85c"</span>,</span>
+<span id="cb62-736"><a href="#cb62-736" aria-hidden="true" tabindex="-1"></a>    <span class="at">table_header_color =</span> <span class="st">"#2c7fb8"</span>, <span class="at">font_family =</span> <span class="st">"Arial, sans-serif"</span>, <span class="at">font_size_base =</span> <span class="dv">14</span></span>
+<span id="cb62-737"><a href="#cb62-737" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb62-738"><a href="#cb62-738" aria-hidden="true" tabindex="-1"></a>  <span class="fu">launch_prog_deploy_app</span>(</span>
+<span id="cb62-739"><a href="#cb62-739" aria-hidden="true" tabindex="-1"></a>    manager,</span>
+<span id="cb62-740"><a href="#cb62-740" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_dict =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb62-741"><a href="#cb62-741" aria-hidden="true" tabindex="-1"></a>      <span class="at">Feature =</span> selected_feats,</span>
+<span id="cb62-742"><a href="#cb62-742" aria-hidden="true" tabindex="-1"></a>      <span class="at">Description =</span> <span class="fu">paste</span>(<span class="st">"Predictor"</span>, <span class="fu">seq_along</span>(selected_feats)),</span>
+<span id="cb62-743"><a href="#cb62-743" aria-hidden="true" tabindex="-1"></a>      <span class="at">Units =</span> <span class="fu">rep</span>(<span class="st">"--"</span>, <span class="fu">length</span>(selected_feats))</span>
+<span id="cb62-744"><a href="#cb62-744" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb62-745"><a href="#cb62-745" aria-hidden="true" tabindex="-1"></a>    <span class="at">project_info =</span> <span class="fu">list</span>(</span>
+<span id="cb62-746"><a href="#cb62-746" aria-hidden="true" tabindex="-1"></a>      <span class="at">abstract =</span> <span class="fu">paste</span>(<span class="st">"Prognostic model trained on"</span>, train_task<span class="sc">$</span>nrow, <span class="st">"patients."</span>),</span>
+<span id="cb62-747"><a href="#cb62-747" aria-hidden="true" tabindex="-1"></a>      <span class="at">citation =</span> <span class="st">"PMID37633276_DIA_plasmaproomic cohort."</span></span>
+<span id="cb62-748"><a href="#cb62-748" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-749"><a href="#cb62-749" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb62-750"><a href="#cb62-750" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-751"><a href="#cb62-751" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-752"><a href="#cb62-752" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-753"><a href="#cb62-753" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb62-754"><a href="#cb62-754" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-755"><a href="#cb62-755" aria-hidden="true" tabindex="-1"></a><span class="fu">### 9 Final Report</span></span>
+<span id="cb62-756"><a href="#cb62-756" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-757"><a href="#cb62-757" aria-hidden="true" tabindex="-1"></a>This section saves model objects, tables, and figures for reproducibility, review, and reuse.</span>
+<span id="cb62-758"><a href="#cb62-758" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-759"><a href="#cb62-759" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb62-760"><a href="#cb62-760" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module4-advanced-20</span></span>
+<span id="cb62-761"><a href="#cb62-761" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: false</span></span>
+<span id="cb62-762"><a href="#cb62-762" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb62-763"><a href="#cb62-763" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb62-764"><a href="#cb62-764" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb62-765"><a href="#cb62-765" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb62-766"><a href="#cb62-766" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb62-767"><a href="#cb62-767" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. Final Report</span></span>
+<span id="cb62-768"><a href="#cb62-768" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------------------------</span></span>
+<span id="cb62-769"><a href="#cb62-769" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-770"><a href="#cb62-770" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Module 4 (advanced, leakage‑free) finished successfully!</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-771"><a href="#cb62-771" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Best model:"</span>, best_id,</span>
+<span id="cb62-772"><a href="#cb62-772" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| CV C-index (training):"</span>, <span class="fu">round</span>(cv_cindex, <span class="dv">4</span>),</span>
+<span id="cb62-773"><a href="#cb62-773" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| Validation C-index:"</span>, <span class="fu">round</span>(val_cindex, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-774"><a href="#cb62-774" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Optimal cutoff:"</span>, <span class="fu">round</span>(opt_cutoff, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-775"><a href="#cb62-775" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"All results saved under:"</span>, OUTPUT_DIR, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-776"><a href="#cb62-776" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb62-777"><a href="#cb62-777" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
