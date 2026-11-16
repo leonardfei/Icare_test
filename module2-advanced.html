@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-4c5e755a3bfe43f3706dcc37cc2065fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-7f6c64e0d652c61cb9aac081886fc576.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -7997,14 +7997,20 @@ $ci
 <span id="cb236-7"><a href="#cb236-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 13.3 Interactive Shiny app — only launched in an interactive session so</span></span>
 <span id="cb236-8"><a href="#cb236-8" aria-hidden="true" tabindex="-1"></a><span class="do">## this script can still run non-interactively (e.g. via `Rscript`).</span></span>
 <span id="cb236-9"><a href="#cb236-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bslib); <span class="fu">library</span>(shiny); <span class="fu">library</span>(plotly)</span>
-<span id="cb236-10"><a href="#cb236-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interactive</span>()) {</span>
-<span id="cb236-11"><a href="#cb236-11" aria-hidden="true" tabindex="-1"></a>  icare<span class="sc">::</span><span class="fu">deploy_clinlab_app</span>(deploy_manager, <span class="at">title =</span> <span class="st">"Clinlabomics Intelligence"</span>)</span>
-<span id="cb236-12"><a href="#cb236-12" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb236-13"><a href="#cb236-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Interactive deployment app skipped during non-interactive book rendering."</span>)</span>
-<span id="cb236-14"><a href="#cb236-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb236-10"><a href="#cb236-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb236-11"><a href="#cb236-11" aria-hidden="true" tabindex="-1"></a>deploy_manager<span class="sc">$</span>preprocess_columns <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(</span>
+<span id="cb236-12"><a href="#cb236-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(deploy_manager<span class="sc">$</span>ref_data),</span>
+<span id="cb236-13"><a href="#cb236-13" aria-hidden="true" tabindex="-1"></a>  deploy_manager<span class="sc">$</span>group_col</span>
+<span id="cb236-14"><a href="#cb236-14" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb236-15"><a href="#cb236-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb236-16"><a href="#cb236-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb236-17"><a href="#cb236-17" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb236-16"><a href="#cb236-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interactive</span>()) {</span>
+<span id="cb236-17"><a href="#cb236-17" aria-hidden="true" tabindex="-1"></a>  icare<span class="sc">::</span><span class="fu">deploy_clinlab_app</span>(deploy_manager, <span class="at">title =</span> <span class="st">"Clinlabomics Intelligence"</span>)</span>
+<span id="cb236-18"><a href="#cb236-18" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb236-19"><a href="#cb236-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Interactive deployment app skipped during non-interactive book rendering."</span>)</span>
+<span id="cb236-20"><a href="#cb236-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb236-21"><a href="#cb236-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb236-22"><a href="#cb236-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb236-23"><a href="#cb236-23" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -9438,36 +9444,42 @@ $ci
 <span id="cb245-843"><a href="#cb245-843" aria-hidden="true" tabindex="-1"></a><span class="do">## 13.3 Interactive Shiny app — only launched in an interactive session so</span></span>
 <span id="cb245-844"><a href="#cb245-844" aria-hidden="true" tabindex="-1"></a><span class="do">## this script can still run non-interactively (e.g. via `Rscript`).</span></span>
 <span id="cb245-845"><a href="#cb245-845" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bslib); <span class="fu">library</span>(shiny); <span class="fu">library</span>(plotly)</span>
-<span id="cb245-846"><a href="#cb245-846" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interactive</span>()) {</span>
-<span id="cb245-847"><a href="#cb245-847" aria-hidden="true" tabindex="-1"></a>  icare<span class="sc">::</span><span class="fu">deploy_clinlab_app</span>(deploy_manager, <span class="at">title =</span> <span class="st">"Clinlabomics Intelligence"</span>)</span>
-<span id="cb245-848"><a href="#cb245-848" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb245-849"><a href="#cb245-849" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Interactive deployment app skipped during non-interactive book rendering."</span>)</span>
-<span id="cb245-850"><a href="#cb245-850" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb245-846"><a href="#cb245-846" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-847"><a href="#cb245-847" aria-hidden="true" tabindex="-1"></a>deploy_manager<span class="sc">$</span>preprocess_columns <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(</span>
+<span id="cb245-848"><a href="#cb245-848" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(deploy_manager<span class="sc">$</span>ref_data),</span>
+<span id="cb245-849"><a href="#cb245-849" aria-hidden="true" tabindex="-1"></a>  deploy_manager<span class="sc">$</span>group_col</span>
+<span id="cb245-850"><a href="#cb245-850" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb245-851"><a href="#cb245-851" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-852"><a href="#cb245-852" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-853"><a href="#cb245-853" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
-<span id="cb245-854"><a href="#cb245-854" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
-<span id="cb245-855"><a href="#cb245-855" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-856"><a href="#cb245-856" aria-hidden="true" tabindex="-1"></a><span class="fu">### 14 Save the Final Model Object</span></span>
+<span id="cb245-852"><a href="#cb245-852" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interactive</span>()) {</span>
+<span id="cb245-853"><a href="#cb245-853" aria-hidden="true" tabindex="-1"></a>  icare<span class="sc">::</span><span class="fu">deploy_clinlab_app</span>(deploy_manager, <span class="at">title =</span> <span class="st">"Clinlabomics Intelligence"</span>)</span>
+<span id="cb245-854"><a href="#cb245-854" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb245-855"><a href="#cb245-855" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Interactive deployment app skipped during non-interactive book rendering."</span>)</span>
+<span id="cb245-856"><a href="#cb245-856" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb245-857"><a href="#cb245-857" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-858"><a href="#cb245-858" aria-hidden="true" tabindex="-1"></a>This section trains and compares candidate models. Select models using discrimination, calibration, stability, and clinical utility together.</span>
-<span id="cb245-859"><a href="#cb245-859" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-860"><a href="#cb245-860" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
-<span id="cb245-861"><a href="#cb245-861" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module2-advanced-26</span></span>
-<span id="cb245-862"><a href="#cb245-862" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb245-863"><a href="#cb245-863" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb245-864"><a href="#cb245-864" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb245-865"><a href="#cb245-865" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
-<span id="cb245-866"><a href="#cb245-866" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
-<span id="cb245-867"><a href="#cb245-867" aria-hidden="true" tabindex="-1"></a><span class="co"># 14. Save the Final Model Object</span></span>
-<span id="cb245-868"><a href="#cb245-868" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
-<span id="cb245-869"><a href="#cb245-869" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(model_obj, <span class="at">file =</span> <span class="st">"model_obj.rds"</span>)</span>
-<span id="cb245-870"><a href="#cb245-870" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-871"><a href="#cb245-871" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb245-872"><a href="#cb245-872" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Module 2 (advanced) pipeline finished successfully!</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb245-873"><a href="#cb245-873" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"All figures/tables saved under:"</span>, OUTPUT_DIR, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb245-874"><a href="#cb245-874" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb245-875"><a href="#cb245-875" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb245-858"><a href="#cb245-858" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-859"><a href="#cb245-859" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb245-860"><a href="#cb245-860" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span>
+<span id="cb245-861"><a href="#cb245-861" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-862"><a href="#cb245-862" aria-hidden="true" tabindex="-1"></a><span class="fu">### 14 Save the Final Model Object</span></span>
+<span id="cb245-863"><a href="#cb245-863" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-864"><a href="#cb245-864" aria-hidden="true" tabindex="-1"></a>This section trains and compares candidate models. Select models using discrimination, calibration, stability, and clinical utility together.</span>
+<span id="cb245-865"><a href="#cb245-865" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-866"><a href="#cb245-866" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb245-867"><a href="#cb245-867" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: module2-advanced-26</span></span>
+<span id="cb245-868"><a href="#cb245-868" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb245-869"><a href="#cb245-869" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb245-870"><a href="#cb245-870" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb245-871"><a href="#cb245-871" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-show: hold</span></span>
+<span id="cb245-872"><a href="#cb245-872" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
+<span id="cb245-873"><a href="#cb245-873" aria-hidden="true" tabindex="-1"></a><span class="co"># 14. Save the Final Model Object</span></span>
+<span id="cb245-874"><a href="#cb245-874" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb245-875"><a href="#cb245-875" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(model_obj, <span class="at">file =</span> <span class="st">"model_obj.rds"</span>)</span>
+<span id="cb245-876"><a href="#cb245-876" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb245-877"><a href="#cb245-877" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb245-878"><a href="#cb245-878" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Module 2 (advanced) pipeline finished successfully!</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb245-879"><a href="#cb245-879" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"All figures/tables saved under:"</span>, OUTPUT_DIR, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb245-880"><a href="#cb245-880" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"========================================</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb245-881"><a href="#cb245-881" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
