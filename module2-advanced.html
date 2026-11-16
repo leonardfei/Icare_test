@@ -733,7 +733,7 @@ RFE selected: 20 features</code></pre>
 Running GA: 2 iters, popSize 5, cv...
 + final GA
  1 0.9028436 (15)
- 2 0.9028436-&gt;0.8270142 (15-&gt;23, 52.0%)
+ 2 0.9028436-&gt;0.8412322 (15-&gt;23, 52.0%)
 + final model
 GA selected: 15 features</code></pre>
 </div>
@@ -1211,7 +1211,7 @@ Univariate glm: Monocytes_count                          AUC = 0.5668
 Univariate glm: Basophil_count                           AUC = 0.4800
 Univariate glm: Mean_platelet_volume                     AUC = 0.6713
 Univariate glm: PCT                                      AUC = 0.6322
-Univariate glm: Platelet_volume_distribution_width       AUC = 0.8673
+Univariate glm: Platelet_volume_distribution_width       AUC = 0.8672
 Univariate glm: sex                                      AUC = 0.5079
 Combined glm (7 features): AUC = 0.9379</code></pre>
 </div>
@@ -2065,7 +2065,19 @@ Plot data saved to: ./Module2_Advanced_Output/02_models/roc_curve_data.csv
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>model_obj <span class="ot">&lt;-</span> <span class="fu">SelectBestModel</span>(model_obj, <span class="at">metric =</span> <span class="st">"auc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Best model ( auc ):  nb </code></pre>
+<pre><code>Best model by training-set CV  auc  ( auc ):  C5.0 
+
+---- Training-set CV comparison (auc) ----
+     Model   CV_Mean      CV_SD     CV_F1
+      C5.0 0.9416986 0.03415490 0.9148891
+ svmRadial 0.9390441 0.02954969 0.9252465
+        rf 0.9373829 0.02990149 0.9197701
+        nb 0.9365212 0.02462882 0.8934543
+       knn 0.9356784 0.02166255 0.9130399
+       lda 0.9344831 0.02655720 0.9115954
+       glm 0.9329484 0.02640554 0.9114018
+    glmnet 0.9327737 0.02629225 0.9114018
+     rpart 0.9007407 0.02455467 0.8993411</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2480,14 +2492,26 @@ Ensemble 'Weighted' created.</code></pre>
 <span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>model_obj <span class="ot">&lt;-</span> <span class="fu">SelectBestModel</span>(model_obj, <span class="at">metric =</span> <span class="st">"auc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Best model ( auc ):  nb </code></pre>
+<pre><code>Best model by training-set CV  auc  ( auc ):  C5.0 
+
+---- Training-set CV comparison (auc) ----
+     Model   CV_Mean      CV_SD     CV_F1
+      C5.0 0.9416986 0.03415490 0.9148891
+ svmRadial 0.9390441 0.02954969 0.9252465
+        rf 0.9373829 0.02990149 0.9197701
+        nb 0.9365212 0.02462882 0.8934543
+       knn 0.9356784 0.02166255 0.9130399
+       lda 0.9344831 0.02655720 0.9115954
+       glm 0.9329484 0.02640554 0.9114018
+    glmnet 0.9327737 0.02629225 0.9114018
+     rpart 0.9007407 0.02455467 0.8993411</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Best single model:"</span>, model_obj<span class="sc">@</span>best.model.result<span class="sc">$</span>model_type, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Best single model: nb </code></pre>
+<pre><code>Best single model: C5.0 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2529,7 +2553,7 @@ Ensemble 'Weighted' created.</code></pre>
 <span id="cb138-26"><a href="#cb138-26" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Best model type:"</span>, best_method, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Best model type: nb </code></pre>
+<pre><code>Best model type: C5.0 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2538,12 +2562,12 @@ Ensemble 'Weighted' created.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ========================================
-  Hyperparameters for: nb 
+  Hyperparameters for: C5.0 
 ========================================
- parameter                label   class                 default_range
-        fL   Laplace Correction numeric [0, 1]  # please set manually
- usekernel    Distribution Type logical [0, 1]  # please set manually
-    adjust Bandwidth Adjustment numeric [0, 1]  # please set manually
+ parameter                 label     class                 default_range
+    trials # Boosting Iterations   numeric [0, 1]  # please set manually
+     model            Model Type character [0, 1]  # please set manually
+    winnow                Winnow   logical [0, 1]  # please set manually
 
 Use these parameters to build bounds with BuildTuningBounds().
 You can modify the default ranges as needed.</code></pre>
@@ -2591,7 +2615,7 @@ You can modify the default ranges as needed.</code></pre>
 <span id="cb142-39"><a href="#cb142-39" aria-hidden="true" tabindex="-1"></a>            model_type, original_auc, comparison_label, tuned_auc))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>&gt;&gt;&gt; Performance comparison for nb — original AUC: 0.9318 | untuned fallback AUC: 0.9318</code></pre>
+<pre><code>&gt;&gt;&gt; Performance comparison for C5.0 — original AUC: 0.9166 | untuned fallback AUC: 0.9166</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2633,7 +2657,7 @@ You can modify the default ranges as needed.</code></pre>
 <span id="cb146-6"><a href="#cb146-6" aria-hidden="true" tabindex="-1"></a>explainer <span class="ot">&lt;-</span> <span class="fu">CreateExplainer</span>(model_obj)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[OK] Explainer created | Label: 'nb' | Pos Class: 'Case' | 7 features</code></pre>
+<pre><code>[OK] Explainer created | Label: 'C5.0' | Pos Class: 'Case' | 7 features</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2643,19 +2667,17 @@ You can modify the default ranges as needed.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>-- Model Performance ------------------------------------------------------
 Measures for:  classification
-recall     : 0.8897638 
-precision  : 0.9338843 
-f1         : 0.9112903 
-accuracy   : 0.8957346 
-auc        : 0.9611689
+recall     : 0.9645669 
+precision  : 0.9351145 
+f1         : 0.9496124 
+accuracy   : 0.9383886 
+auc        : 0.9868649
 
 Residuals:
-           0%           10%           20%           30%           40% 
--9.572903e-01 -8.127906e-02 -3.536299e-02 -1.735514e-02  5.111083e-06 
-          50%           60%           70%           80%           90% 
- 1.708094e-02  4.515350e-02  8.521137e-02  1.628054e-01  2.983988e-01 
-         100% 
- 9.962699e-01 </code></pre>
+         0%         10%         20%         30%         40%         50% 
+-0.82886126 -0.26297125 -0.13136233 -0.04704107  0.00000000  0.00000000 
+        60%         70%         80%         90%        100% 
+ 0.07290463  0.11415800  0.13640634  0.25153011  0.77975519 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>ROC plot saved to: /home/runner/work/Icare_test/Icare_test/Module2_Advanced_Output/04_explainability/performance_roc.pdf </code></pre>
@@ -2669,15 +2691,15 @@ Residuals:
 <div class="cell-output cell-output-stdout">
 <pre><code>-- Variable Importance (Permutation) -------------------------------------
                             variable mean_dropout_loss label
-1                       _full_model_       0.000000000    nb
-2                                sex       0.001120172    nb
-3                    Monocytes_count       0.003501125    nb
-4                     Basophil_count       0.004314304    nb
-5               Mean_platelet_volume       0.014191976    nb
-6                                PCT       0.020261530    nb
-7                  Lymphocytes_count       0.026572460    nb
-8 Platelet_volume_distribution_width       0.260208099    nb
-9                         _baseline_       0.476687289    nb</code></pre>
+1                       _full_model_       0.000000000  C5.0
+2                    Monocytes_count       0.005702803  C5.0
+3                     Basophil_count       0.009410152  C5.0
+4                                sex       0.010790448  C5.0
+5                                PCT       0.016811961  C5.0
+6                  Lymphocytes_count       0.018806243  C5.0
+7               Mean_platelet_volume       0.037961661  C5.0
+8 Platelet_volume_distribution_width       0.339550525  C5.0
+9                         _baseline_       0.502437195  C5.0</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Plot saved to: ./Module2_Advanced_Output/04_explainability/variable_importance.pdf </code></pre>
@@ -2702,13 +2724,13 @@ Residuals:
 
   Top 7 features (by |mean SHAP|):
  Rank                            Feature Mean_Abs_SHAP
-    1 Platelet_volume_distribution_width      0.325471
-    2                  Lymphocytes_count      0.087467
-    3               Mean_platelet_volume      0.050659
-    4                                PCT      0.048331
-    5                    Monocytes_count      0.035689
-    6                     Basophil_count      0.022657
-    7                                sex      0.007208</code></pre>
+    1 Platelet_volume_distribution_width      0.289201
+    2                  Lymphocytes_count      0.071099
+    3               Mean_platelet_volume      0.037541
+    4                                PCT      0.035500
+    5                     Basophil_count      0.028749
+    6                    Monocytes_count      0.021152
+    7                                sex      0.018218</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2719,7 +2741,7 @@ Residuals:
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>-- Single-Observation SHAP Waterfall ----------------------------
-Predicted probability for this observation: 0.6336</code></pre>
+Predicted probability for this observation: 0.8773</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SHAP individual saved to: ./Module2_Advanced_Output/04_explainability/shap_individual.pdf </code></pre>
@@ -2796,7 +2818,7 @@ Predicted probability for this observation: 0.6336</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb174"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a>explainer_tuned <span class="ot">&lt;-</span> <span class="fu">CreateExplainer</span>(model_obj, <span class="at">model =</span> tuned_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[OK] Explainer created | Label: 'nb' | Pos Class: 'Case' | 7 features</code></pre>
+<pre><code>[OK] Explainer created | Label: 'C5.0' | Pos Class: 'Case' | 7 features</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2806,15 +2828,15 @@ Predicted probability for this observation: 0.6336</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>-- Variable Importance (Permutation) -------------------------------------
                             variable mean_dropout_loss label
-1                       _full_model_       0.000000000    nb
-2                                sex       0.001087364    nb
-3                    Monocytes_count       0.003355831    nb
-4                     Basophil_count       0.004897825    nb
-5               Mean_platelet_volume       0.012898388    nb
-6                                PCT       0.019342895    nb
-7                  Lymphocytes_count       0.023136952    nb
-8 Platelet_volume_distribution_width       0.257988845    nb
-9                         _baseline_       0.455052493    nb</code></pre>
+1                       _full_model_       0.000000000  C5.0
+2                    Monocytes_count       0.005243485  C5.0
+3                                sex       0.008570022  C5.0
+4                     Basophil_count       0.008852409  C5.0
+5                                PCT       0.015684758  C5.0
+6                  Lymphocytes_count       0.016686586  C5.0
+7               Mean_platelet_volume       0.036713770  C5.0
+8 Platelet_volume_distribution_width       0.338927165  C5.0
+9                         _baseline_       0.478621813  C5.0</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Plot saved to: ./Module2_Advanced_Output/04_explainability/tuned/variable_importance.pdf </code></pre>
@@ -7206,41 +7228,45 @@ HC239                   1.6   &gt;60 years</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ApplyThreshold</span>(thresh, <span class="at">which_threshold =</span> <span class="st">"Youden"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>--- Applied Threshold = 0.2773 ---
+<pre><code>--- Applied Threshold = 0.5815 ---
                  Reference
 Prediction        Healthy Control Case
-  Healthy Control              62    8
-  Case                          9  100
-       Threshold Sensitivity Specificity       PPV       NPV  Accuracy       F1
-Youden  0.277311   0.9259259   0.8732394 0.9174312 0.8857143 0.9050279 0.921659</code></pre>
+  Healthy Control              64   14
+  Case                          7   94
+       Threshold Sensitivity Specificity       PPV       NPV  Accuracy
+Youden 0.5814818   0.8703704   0.9014085 0.9306931 0.8205128 0.8826816
+              F1
+Youden 0.8995215</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb195"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ApplyThreshold</span>(thresh, <span class="at">which_threshold =</span> <span class="st">"PPV_Target"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>--- Applied Threshold = 0.2393 ---
+<pre><code>--- Applied Threshold = 0.4573 ---
                  Reference
 Prediction        Healthy Control Case
-  Healthy Control              60    8
-  Case                         11  100
+  Healthy Control              61   11
+  Case                         10   97
            Threshold Sensitivity Specificity       PPV       NPV  Accuracy
-PPV_Target    0.2393   0.9259259   0.8450704 0.9009009 0.8823529 0.8938547
-                 F1
-PPV_Target 0.913242</code></pre>
+PPV_Target    0.4573   0.8981481   0.8591549 0.9065421 0.8472222 0.8826816
+                  F1
+PPV_Target 0.9023256</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb197"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ApplyThreshold</span>(thresh, <span class="at">which_threshold =</span> <span class="st">"NPV_Target"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>--- Applied Threshold = 0.0046 ---
+<pre><code>--- Applied Threshold = 0.0430 ---
                  Reference
 Prediction        Healthy Control Case
-  Healthy Control               1    0
-  Case                         70  108
-           Threshold Sensitivity Specificity       PPV NPV  Accuracy        F1
-NPV_Target    0.0046           1  0.01408451 0.6067416   1 0.6089385 0.7552448</code></pre>
+  Healthy Control              10    1
+  Case                         61  107
+           Threshold Sensitivity Specificity       PPV       NPV  Accuracy
+NPV_Target     0.043   0.9907407   0.1408451 0.6369048 0.9090909 0.6536313
+                  F1
+NPV_Target 0.7753623</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -7250,12 +7276,12 @@ NPV_Target    0.0046           1  0.01408451 0.6067416   1 0.6089385 0.7552448</
 <pre><code>--- Applied Threshold = 0.5000 ---
                  Reference
 Prediction        Healthy Control Case
-  Healthy Control              65   14
-  Case                          6   94
-            Threshold Sensitivity Specificity  PPV       NPV  Accuracy
-Sensitivity       0.5   0.8703704    0.915493 0.94 0.8227848 0.8882682
+  Healthy Control              61   12
+  Case                         10   96
+            Threshold Sensitivity Specificity       PPV       NPV Accuracy
+Sensitivity       0.5   0.8888889   0.8591549 0.9056604 0.8356164 0.877095
                    F1
-Sensitivity 0.9038462</code></pre>
+Sensitivity 0.8971963</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -7316,7 +7342,7 @@ Sensitivity 0.9038462</code></pre>
 <span id="cb201-55"><a href="#cb201-55" aria-hidden="true" tabindex="-1"></a>                      <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(clin_dir, <span class="st">"comparison"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Threshold Your Model: 0.2773
+<pre><code>Threshold Your Model: 0.5815
 Threshold External Model: 0.3758</code></pre>
 </div>
 <details class="code-fold">
