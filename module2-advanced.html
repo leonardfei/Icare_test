@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7f6c64e0d652c61cb9aac081886fc576.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4c5e755a3bfe43f3706dcc37cc2065fe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -732,8 +732,8 @@ RFE selected: 20 features</code></pre>
 ===== GA =====
 Running GA: 2 iters, popSize 5, cv...
 + final GA
- 1 0.9028436 (15)
- 2 0.9028436-&gt;0.8412322 (15-&gt;23, 52.0%)
+ 1 0.9099526 (15)
+ 2 0.9099526-&gt;0.8341232 (15-&gt;23, 52.0%)
 + final model
 GA selected: 15 features</code></pre>
 </div>
@@ -2107,7 +2107,7 @@ Plot data saved to: ./Module2_Advanced_Output/02_models/roc_curve_data.csv
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Model Comparison Visualizations</span></span>
 <span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
-<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotTopModelAUC</span>(model_obj, <span class="at">top_n =</span> <span class="dv">4</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotTopModelAUC</span>(model_obj, <span class="at">top_n =</span> <span class="dv">4</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir,<span class="at">rank_by =</span> <span class="st">"train_cv"</span>)</span>
 <span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotProbDensity</span>(model_obj, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -2122,20 +2122,20 @@ Plot data saved to: ./Module2_Advanced_Output/02_models/roc_curve_data.csv
 <span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>  model_obj, <span class="at">top_n =</span> <span class="dv">4</span>,</span>
 <span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">"auc"</span>, <span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"accuracy_score"</span>, <span class="st">"f1_score"</span>),</span>
 <span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">palette_name =</span> <span class="st">"Darjeeling1"</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir,</span>
-<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">5</span></span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">rank_by =</span> <span class="st">"train_cv"</span></span>
 <span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotModelParallel</span>(</span>
 <span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a>  model_obj, <span class="at">top_n =</span> <span class="dv">4</span>,</span>
 <span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">"auc"</span>, <span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"accuracy_score"</span>, <span class="st">"f1_score"</span>),</span>
-<span id="cb101-11"><a href="#cb101-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir</span>
+<span id="cb101-11"><a href="#cb101-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir, <span class="at">rank_by =</span> <span class="st">"train_cv"</span></span>
 <span id="cb101-12"><a href="#cb101-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating parallel coordinates plot...</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Plot saved to: ./Module2_Advanced_Output/02_models/model_parallel.pdf </code></pre>
+<pre><code>Plot saved to: ./Module2_Advanced_Output/02_models/model_parallel_train_cv.pdf </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2172,9 +2172,9 @@ Processing model: svmRadial
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a trained model to inspect. "rf" is included in the model list above.</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a trained model to inspect. "C5.0" is included in the model list above.</span></span>
 <span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotConfusionMatrix</span>(model_obj, <span class="at">test_data =</span> model_obj<span class="sc">@</span>split.scale.data<span class="sc">$</span>testing,</span>
-<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">model_name =</span> <span class="st">"nb"</span>, <span class="at">threshold =</span> <span class="fl">0.6</span>, <span class="at">prevalence =</span> <span class="fl">0.3</span>,</span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">model_name =</span> <span class="st">"C5.0"</span>, <span class="at">threshold =</span> <span class="fl">0.6</span>, <span class="at">prevalence =</span> <span class="fl">0.3</span>,</span>
 <span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -2187,23 +2187,23 @@ Final predicted levels: [Healthy Control, Case]
 ----------------------------------------
 Performance Metrics (test set)
 ----------------------------------------
-TP = 92 | TN = 65 | FP = 6 | FN = 16
+TP = 94 | TN = 64 | FP = 7 | FN = 14
 Total N = 179
-Accuracy     = 0.877 (87.7%)
-Sensitivity  = 0.852 (85.2%)   [Recall / TPR]
-Specificity  = 0.915 (91.5%)   [TNR]
-PPV (Precision) = 0.939 (93.9%)
-NPV             = 0.802 (80.2%)
+Accuracy     = 0.883 (88.3%)
+Sensitivity  = 0.870 (87.0%)   [Recall / TPR]
+Specificity  = 0.901 (90.1%)   [TNR]
+PPV (Precision) = 0.931 (93.1%)
+NPV             = 0.821 (82.1%)
 Prevalence (test) = 0.603 (60.3%)
 
 ----------------------------------------
 Adjusted for population prevalence = 0.300 (30.0%)
 ----------------------------------------
-Adjusted PPV (true positive prediction) = 0.812 (81.2%)
-Adjusted NPV (true negative prediction) = 0.935 (93.5%)</code></pre>
+Adjusted PPV (true positive prediction) = 0.791 (79.1%)
+Adjusted NPV (true negative prediction) = 0.942 (94.2%)</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[OK] Plot saved to: ./Module2_Advanced_Output/02_models/confusion_nb_thr060_prev030.pdf</code></pre>
+<pre><code>[OK] Plot saved to: ./Module2_Advanced_Output/02_models/confusion_C5.0_thr060_prev030.pdf</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2214,7 +2214,7 @@ Adjusted NPV (true negative prediction) = 0.935 (93.5%)</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"nb"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"C5.0"</span>,</span>
 <span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">test_data =</span> model_obj<span class="sc">@</span>filtered.set<span class="sc">$</span>training,</span>
 <span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -2226,42 +2226,42 @@ Positive Level (Assumed levels[2]): Case
 Positive Samples: 254 / 422 
 
 ===== Predicted Probability Distribution =====
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-0.000777 0.051986 0.737842 0.543449 0.934847 1.000000 
-Standard Deviation: 0.4101146 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.1822  0.7780  0.5973  0.9197  1.0000 
+Standard Deviation: 0.3666951 
 
-Brier Score (Lower is better, range 0-0.25): 0.0788 
+Brier Score (Lower is better, range 0-0.25): 0.0533 
 
 ===== Calibration Parameters (Logit) =====
-Intercept: 0.786 (Ideal: 0)
-Slope:     1.029 (Ideal: 1)
-Warning: Large intercept suggests global probability shift.
+Intercept: -0.279 (Ideal: 0)
+Slope:     2.128 (Ideal: 1)
+Warning: Slope deviation suggests poor calibration at extremes.
 Auto-selected equal-width binning, n_bins=10
 
 ===== Binning Calibration Summary (n_bins = 10 ) =====
 # A tibble: 10 × 4
    bin       mean_pred obs_rate     n
    &lt;fct&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;
- 1 [0,0.1]      0.0326   0.0368   136
- 2 (0.1,0.2]    0.141    0.35      20
- 3 (0.2,0.3]    0.242    0.875      8
- 4 (0.3,0.4]    0.352    0.714      7
- 5 (0.4,0.5]    0.457    0.444      9
- 6 (0.5,0.6]    0.554    0.571      7
- 7 (0.6,0.7]    0.634    0.909     11
- 8 (0.7,0.8]    0.752    0.848     33
- 9 (0.8,0.9]    0.851    0.902     51
-10 (0.9,1]      0.961    0.986    140
+ 1 [0,0.1]      0.0613    0        80
+ 2 (0.1,0.2]    0.157     0        36
+ 3 (0.2,0.3]    0.256     0.174    23
+ 4 (0.3,0.4]    0.350     0.143    14
+ 5 (0.4,0.5]    0.464     0.429     7
+ 6 (0.5,0.6]    0.559     0.4      10
+ 7 (0.6,0.7]    0.653     0.65     20
+ 8 (0.7,0.8]    0.753     0.935    31
+ 9 (0.8,0.9]    0.858     0.973    75
+10 (0.9,1]      0.961     1       126
 
-Mean Absolute Calibration Error (Eavg): 0.1685 </code></pre>
+Mean Absolute Calibration Error (Eavg): 0.1041 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Plot saved to: ./Module2_Advanced_Output/02_models/Calibration_nb.pdf </code></pre>
+Plot saved to: ./Module2_Advanced_Output/02_models/Calibration_C5.0.pdf </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"nb"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"C5.0"</span>,</span>
 <span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">test_data =</span> model_obj<span class="sc">@</span>filtered.set<span class="sc">$</span>testing, </span>
 <span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -2273,38 +2273,38 @@ Positive Level (Assumed levels[2]): Case
 Positive Samples: 108 / 179 
 
 ===== Predicted Probability Distribution =====
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-0.004576 0.058902 0.667170 0.534256 0.941597 0.999621 
-Standard Deviation: 0.4003827 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2197  0.6949  0.5736  0.8731  1.0000 
+Standard Deviation: 0.3506139 
 
-Brier Score (Lower is better, range 0-0.25): 0.0944 
+Brier Score (Lower is better, range 0-0.25): 0.1028 
 
 ===== Calibration Parameters (Logit) =====
-Intercept: 0.757 (Ideal: 0)
-Slope:     0.927 (Ideal: 1)
-Warning: Large intercept suggests global probability shift.
+Intercept: 0.237 (Ideal: 0)
+Slope:     0.718 (Ideal: 1)
+Warning: Slope deviation suggests poor calibration at extremes.
 Auto-selected equal-width binning, n_bins=10
 
 ===== Binning Calibration Summary (n_bins = 10 ) =====
 # A tibble: 10 × 4
    bin       mean_pred obs_rate     n
    &lt;fct&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;
- 1 [0,0.1]      0.0373   0.0536    56
- 2 (0.1,0.2]    0.154    0.667      6
- 3 (0.2,0.3]    0.239    0.222      9
- 4 (0.3,0.4]    0.365    0.667      3
- 5 (0.4,0.5]    0.442    0.6        5
- 6 (0.5,0.6]    0.549    1          2
- 7 (0.6,0.7]    0.653    0.929     14
- 8 (0.7,0.8]    0.756    0.875      8
- 9 (0.8,0.9]    0.854    0.895     19
-10 (0.9,1]      0.959    0.965     57
+ 1 [0,0.1]      0.0543   0.0385    26
+ 2 (0.1,0.2]    0.170    0.0556    18
+ 3 (0.2,0.3]    0.239    0.235     17
+ 4 (0.3,0.4]    0.337    0.667      6
+ 5 (0.4,0.5]    0.436    0.333      6
+ 6 (0.5,0.6]    0.530    0.4        5
+ 7 (0.6,0.7]    0.655    0.917     12
+ 8 (0.7,0.8]    0.765    0.944     18
+ 9 (0.8,0.9]    0.846    0.931     29
+10 (0.9,1]      0.969    0.929     42
 
-Mean Absolute Calibration Error (Eavg): 0.1898 </code></pre>
+Mean Absolute Calibration Error (Eavg): 0.1263 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Plot saved to: ./Module2_Advanced_Output/02_models/Calibration_nb.pdf </code></pre>
+Plot saved to: ./Module2_Advanced_Output/02_models/Calibration_C5.0.pdf </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2684,7 +2684,7 @@ Residuals:
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ExplainVariableImportance</span>(explainer, <span class="at">B =</span> <span class="dv">10</span>, <span class="at">top_n =</span> <span class="dv">20</span>, <span class="at">filter_zero =</span> <span class="cn">TRUE</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ExplainVariableImportance</span>(explainer, <span class="at">B =</span> <span class="dv">100</span>, <span class="at">top_n =</span> <span class="dv">20</span>, <span class="at">filter_zero =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">save_plots =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> xai_dir,</span>
 <span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">plot_width =</span> <span class="dv">8</span>, <span class="at">plot_height =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -2692,14 +2692,14 @@ Residuals:
 <pre><code>-- Variable Importance (Permutation) -------------------------------------
                             variable mean_dropout_loss label
 1                       _full_model_       0.000000000  C5.0
-2                    Monocytes_count       0.005702803  C5.0
-3                     Basophil_count       0.009410152  C5.0
-4                                sex       0.010790448  C5.0
-5                                PCT       0.016811961  C5.0
-6                  Lymphocytes_count       0.018806243  C5.0
-7               Mean_platelet_volume       0.037961661  C5.0
-8 Platelet_volume_distribution_width       0.339550525  C5.0
-9                         _baseline_       0.502437195  C5.0</code></pre>
+2                    Monocytes_count       0.005514975  C5.0
+3                     Basophil_count       0.008791245  C5.0
+4                                sex       0.009565289  C5.0
+5                                PCT       0.016418846  C5.0
+6                  Lymphocytes_count       0.017480432  C5.0
+7               Mean_platelet_volume       0.038559125  C5.0
+8 Platelet_volume_distribution_width       0.341657176  C5.0
+9                         _baseline_       0.486354401  C5.0</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Plot saved to: ./Module2_Advanced_Output/04_explainability/variable_importance.pdf </code></pre>
@@ -7313,9 +7313,9 @@ Sensitivity 0.8971963</code></pre>
 <span id="cb201-26"><a href="#cb201-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Set seed for reproducibility of the random perturbation step.</span></span>
 <span id="cb201-27"><a href="#cb201-27" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
 <span id="cb201-28"><a href="#cb201-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb201-29"><a href="#cb201-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain predicted probabilities for the positive class from the internal random forest model</span></span>
+<span id="cb201-29"><a href="#cb201-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain predicted probabilities for the positive class from the internal C5.0 model</span></span>
 <span id="cb201-30"><a href="#cb201-30" aria-hidden="true" tabindex="-1"></a><span class="co"># applied to the test data.</span></span>
-<span id="cb201-31"><a href="#cb201-31" aria-hidden="true" tabindex="-1"></a>my_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>rf, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
+<span id="cb201-31"><a href="#cb201-31" aria-hidden="true" tabindex="-1"></a>my_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>C5<span class="fl">.0</span>, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
 <span id="cb201-32"><a href="#cb201-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb201-33"><a href="#cb201-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate predictions from an "external" model by adding random noise to the logit of the probabilities.</span></span>
 <span id="cb201-34"><a href="#cb201-34" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a crude way to generate a second set of probability estimates for comparison.</span></span>
@@ -7343,7 +7343,7 @@ Sensitivity 0.8971963</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Threshold Your Model: 0.5815
-Threshold External Model: 0.3758</code></pre>
+Threshold External Model: 0.4507</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -7357,7 +7357,7 @@ Threshold External Model: 0.3758</code></pre>
 <span id="cb203-8"><a href="#cb203-8" aria-hidden="true" tabindex="-1"></a>nri_dir <span class="ot">&lt;-</span> <span class="fu">sub_dir</span>(<span class="st">"06_nri_idi"</span>)</span>
 <span id="cb203-9"><a href="#cb203-9" aria-hidden="true" tabindex="-1"></a>true_labels <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_data[[model_obj<span class="sc">@</span>group_col]])</span>
 <span id="cb203-10"><a href="#cb203-10" aria-hidden="true" tabindex="-1"></a>ref_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>glm,  test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
-<span id="cb203-11"><a href="#cb203-11" aria-hidden="true" tabindex="-1"></a>new_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>nb, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
+<span id="cb203-11"><a href="#cb203-11" aria-hidden="true" tabindex="-1"></a>new_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>C5<span class="fl">.0</span>, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
 <span id="cb203-12"><a href="#cb203-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb203-13"><a href="#cb203-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Scenario A: both models judged against the same clinical risk thresholds.</span></span>
 <span id="cb203-14"><a href="#cb203-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Set directories: keep these figures inside the chapter's output tree</span></span>
@@ -7367,7 +7367,7 @@ Threshold External Model: 0.3758</code></pre>
 <span id="cb203-18"><a href="#cb203-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb203-19"><a href="#cb203-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC</span></span>
 <span id="cb203-20"><a href="#cb203-20" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, </span>
-<span id="cb203-21"><a href="#cb203-21" aria-hidden="true" tabindex="-1"></a>               <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>), <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb203-21"><a href="#cb203-21" aria-hidden="true" tabindex="-1"></a>               <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"C5.0"</span>), <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Plot saved to: ./Module2_Advanced_Output/06_nri_idi/manual_results/roc_comparison.pdf </code></pre>
@@ -7385,19 +7385,19 @@ Threshold External Model: 0.3758</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 $is
-[1] 0.008683901
+[1] 0.007056597
 
 $ip
-[1] 0.08520462
+[1] -0.01650837
 
 $idi
-[1] 0.09388852
+[1] -0.00945177
 
 $ci
-  metric    estimate       lower      upper
-1     IS 0.008683901 -0.04029481 0.06504136
-2     IP 0.085204623  0.05348813 0.11644240
-3    IDI 0.093888523  0.03678714 0.15753561</code></pre>
+  metric     estimate       lower       upper
+1     IS  0.007056597 -0.02887772 0.050217506
+2     IP -0.016508367 -0.04252223 0.008658162
+3    IDI -0.009451770 -0.05395604 0.034857728</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -7411,9 +7411,9 @@ $ci
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-NRI Events: -0.08333333 
-NRI Non-Events: 0.3802817 
-Total NRI: 0.2969484 </code></pre>
+NRI Events: -0.0462963 
+NRI Non-Events: -0.1690141 
+Total NRI: -0.2153104 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -7473,7 +7473,7 @@ Total NRI: 0.2969484 </code></pre>
 <span id="cb218-17"><a href="#cb218-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(nri_res<span class="sc">$</span>nri_total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.0937663</code></pre>
+<pre><code>[1] 0.05594679</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -7495,23 +7495,23 @@ Total NRI: 0.2969484 </code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 $is
-[1] 0.008683901
+[1] 0.007056597
 
 $ip
-[1] 0.08520462
+[1] -0.01650837
 
 $idi
-[1] 0.09388852
+[1] -0.00945177
 
 $ci
-  metric    estimate       lower      upper
-1     IS 0.008683901 -0.04818525 0.06552147
-2     IP 0.085204623  0.05777544 0.11878047
-3    IDI 0.093888523  0.02842401 0.15768741</code></pre>
+  metric     estimate       lower       upper
+1     IS  0.007056597 -0.02931545 0.046731452
+2     IP -0.016508367 -0.03985249 0.007667369
+3    IDI -0.009451770 -0.05213150 0.040617270</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb225"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>), <span class="at">show_ci =</span> <span class="cn">FALSE</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb225"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"C5.0"</span>), <span class="at">show_ci =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb225-2"><a href="#cb225-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"roc"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -7519,7 +7519,7 @@ $ci
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb227"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotPredDist</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>),</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb227"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotPredDist</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"C5.0"</span>),</span>
 <span id="cb227-2"><a href="#cb227-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">outcome_labels =</span> <span class="fu">levels</span>(true_labels), <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"dist"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -8941,32 +8941,32 @@ $ci
 <span id="cb245-340"><a href="#cb245-340" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: '100%'</span></span>
 <span id="cb245-341"><a href="#cb245-341" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Model Comparison Visualizations</span></span>
 <span id="cb245-342"><a href="#cb245-342" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
-<span id="cb245-343"><a href="#cb245-343" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotTopModelAUC</span>(model_obj, <span class="at">top_n =</span> <span class="dv">4</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
+<span id="cb245-343"><a href="#cb245-343" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotTopModelAUC</span>(model_obj, <span class="at">top_n =</span> <span class="dv">4</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir,<span class="at">rank_by =</span> <span class="st">"train_cv"</span>)</span>
 <span id="cb245-344"><a href="#cb245-344" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotProbDensity</span>(model_obj, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
 <span id="cb245-345"><a href="#cb245-345" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotModelComparison</span>(</span>
 <span id="cb245-346"><a href="#cb245-346" aria-hidden="true" tabindex="-1"></a>  model_obj, <span class="at">top_n =</span> <span class="dv">4</span>,</span>
 <span id="cb245-347"><a href="#cb245-347" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">"auc"</span>, <span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"accuracy_score"</span>, <span class="st">"f1_score"</span>),</span>
 <span id="cb245-348"><a href="#cb245-348" aria-hidden="true" tabindex="-1"></a>  <span class="at">palette_name =</span> <span class="st">"Darjeeling1"</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir,</span>
-<span id="cb245-349"><a href="#cb245-349" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">5</span></span>
+<span id="cb245-349"><a href="#cb245-349" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">rank_by =</span> <span class="st">"train_cv"</span></span>
 <span id="cb245-350"><a href="#cb245-350" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb245-351"><a href="#cb245-351" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb245-352"><a href="#cb245-352" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotModelParallel</span>(</span>
 <span id="cb245-353"><a href="#cb245-353" aria-hidden="true" tabindex="-1"></a>  model_obj, <span class="at">top_n =</span> <span class="dv">4</span>,</span>
 <span id="cb245-354"><a href="#cb245-354" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">"auc"</span>, <span class="st">"Sensitivity"</span>, <span class="st">"Specificity"</span>, <span class="st">"accuracy_score"</span>, <span class="st">"f1_score"</span>),</span>
-<span id="cb245-355"><a href="#cb245-355" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir</span>
+<span id="cb245-355"><a href="#cb245-355" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir, <span class="at">rank_by =</span> <span class="st">"train_cv"</span></span>
 <span id="cb245-356"><a href="#cb245-356" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb245-357"><a href="#cb245-357" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotMultiROC</span>(model_obj, <span class="at">test_data =</span> model_obj<span class="sc">@</span>split.scale.data<span class="sc">$</span>testing,</span>
 <span id="cb245-358"><a href="#cb245-358" aria-hidden="true" tabindex="-1"></a>             <span class="at">palette_name =</span> <span class="st">"Darjeeling1"</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
 <span id="cb245-359"><a href="#cb245-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-360"><a href="#cb245-360" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a trained model to inspect. "rf" is included in the model list above.</span></span>
+<span id="cb245-360"><a href="#cb245-360" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a trained model to inspect. "C5.0" is included in the model list above.</span></span>
 <span id="cb245-361"><a href="#cb245-361" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotConfusionMatrix</span>(model_obj, <span class="at">test_data =</span> model_obj<span class="sc">@</span>split.scale.data<span class="sc">$</span>testing,</span>
-<span id="cb245-362"><a href="#cb245-362" aria-hidden="true" tabindex="-1"></a>                    <span class="at">model_name =</span> <span class="st">"nb"</span>, <span class="at">threshold =</span> <span class="fl">0.6</span>, <span class="at">prevalence =</span> <span class="fl">0.3</span>,</span>
+<span id="cb245-362"><a href="#cb245-362" aria-hidden="true" tabindex="-1"></a>                    <span class="at">model_name =</span> <span class="st">"C5.0"</span>, <span class="at">threshold =</span> <span class="fl">0.6</span>, <span class="at">prevalence =</span> <span class="fl">0.3</span>,</span>
 <span id="cb245-363"><a href="#cb245-363" aria-hidden="true" tabindex="-1"></a>                    <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
 <span id="cb245-364"><a href="#cb245-364" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotFeatureImportance</span>(model_obj, <span class="at">top_n =</span> <span class="dv">20</span>, <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
-<span id="cb245-365"><a href="#cb245-365" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"nb"</span>,</span>
+<span id="cb245-365"><a href="#cb245-365" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"C5.0"</span>,</span>
 <span id="cb245-366"><a href="#cb245-366" aria-hidden="true" tabindex="-1"></a>                <span class="at">test_data =</span> model_obj<span class="sc">@</span>filtered.set<span class="sc">$</span>training,</span>
 <span id="cb245-367"><a href="#cb245-367" aria-hidden="true" tabindex="-1"></a>                <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
-<span id="cb245-368"><a href="#cb245-368" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"nb"</span>,</span>
+<span id="cb245-368"><a href="#cb245-368" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotCalibration</span>(model_obj, <span class="at">model_name =</span> <span class="st">"C5.0"</span>,</span>
 <span id="cb245-369"><a href="#cb245-369" aria-hidden="true" tabindex="-1"></a>                <span class="at">test_data =</span> model_obj<span class="sc">@</span>filtered.set<span class="sc">$</span>testing, </span>
 <span id="cb245-370"><a href="#cb245-370" aria-hidden="true" tabindex="-1"></a>                <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> model_dir)</span>
 <span id="cb245-371"><a href="#cb245-371" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
@@ -9159,7 +9159,7 @@ $ci
 <span id="cb245-558"><a href="#cb245-558" aria-hidden="true" tabindex="-1"></a>explainer <span class="ot">&lt;-</span> <span class="fu">CreateExplainer</span>(model_obj)</span>
 <span id="cb245-559"><a href="#cb245-559" aria-hidden="true" tabindex="-1"></a><span class="fu">ExplainModelPerformance</span>(explainer, <span class="at">geom =</span> <span class="st">"roc"</span>, <span class="at">save_plots =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> xai_dir,</span>
 <span id="cb245-560"><a href="#cb245-560" aria-hidden="true" tabindex="-1"></a>                        <span class="at">plot_width =</span> <span class="dv">6</span>, <span class="at">plot_height =</span> <span class="dv">5</span>)</span>
-<span id="cb245-561"><a href="#cb245-561" aria-hidden="true" tabindex="-1"></a><span class="fu">ExplainVariableImportance</span>(explainer, <span class="at">B =</span> <span class="dv">10</span>, <span class="at">top_n =</span> <span class="dv">20</span>, <span class="at">filter_zero =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb245-561"><a href="#cb245-561" aria-hidden="true" tabindex="-1"></a><span class="fu">ExplainVariableImportance</span>(explainer, <span class="at">B =</span> <span class="dv">100</span>, <span class="at">top_n =</span> <span class="dv">20</span>, <span class="at">filter_zero =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb245-562"><a href="#cb245-562" aria-hidden="true" tabindex="-1"></a>                           <span class="at">save_plots =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> xai_dir,</span>
 <span id="cb245-563"><a href="#cb245-563" aria-hidden="true" tabindex="-1"></a>                           <span class="at">plot_width =</span> <span class="dv">8</span>, <span class="at">plot_height =</span> <span class="dv">5</span>)</span>
 <span id="cb245-564"><a href="#cb245-564" aria-hidden="true" tabindex="-1"></a></span>
@@ -9283,9 +9283,9 @@ $ci
 <span id="cb245-682"><a href="#cb245-682" aria-hidden="true" tabindex="-1"></a><span class="co"># Set seed for reproducibility of the random perturbation step.</span></span>
 <span id="cb245-683"><a href="#cb245-683" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
 <span id="cb245-684"><a href="#cb245-684" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-685"><a href="#cb245-685" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain predicted probabilities for the positive class from the internal random forest model</span></span>
+<span id="cb245-685"><a href="#cb245-685" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain predicted probabilities for the positive class from the internal C5.0 model</span></span>
 <span id="cb245-686"><a href="#cb245-686" aria-hidden="true" tabindex="-1"></a><span class="co"># applied to the test data.</span></span>
-<span id="cb245-687"><a href="#cb245-687" aria-hidden="true" tabindex="-1"></a>my_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>rf, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
+<span id="cb245-687"><a href="#cb245-687" aria-hidden="true" tabindex="-1"></a>my_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>C5<span class="fl">.0</span>, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
 <span id="cb245-688"><a href="#cb245-688" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb245-689"><a href="#cb245-689" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate predictions from an "external" model by adding random noise to the logit of the probabilities.</span></span>
 <span id="cb245-690"><a href="#cb245-690" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a crude way to generate a second set of probability estimates for comparison.</span></span>
@@ -9321,7 +9321,7 @@ $ci
 <span id="cb245-720"><a href="#cb245-720" aria-hidden="true" tabindex="-1"></a>nri_dir <span class="ot">&lt;-</span> <span class="fu">sub_dir</span>(<span class="st">"06_nri_idi"</span>)</span>
 <span id="cb245-721"><a href="#cb245-721" aria-hidden="true" tabindex="-1"></a>true_labels <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_data[[model_obj<span class="sc">@</span>group_col]])</span>
 <span id="cb245-722"><a href="#cb245-722" aria-hidden="true" tabindex="-1"></a>ref_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>glm,  test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
-<span id="cb245-723"><a href="#cb245-723" aria-hidden="true" tabindex="-1"></a>new_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>nb, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
+<span id="cb245-723"><a href="#cb245-723" aria-hidden="true" tabindex="-1"></a>new_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_obj<span class="sc">@</span>train.models<span class="sc">$</span>C5<span class="fl">.0</span>, test_data, <span class="at">type =</span> <span class="st">"prob"</span>)[, positive]</span>
 <span id="cb245-724"><a href="#cb245-724" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb245-725"><a href="#cb245-725" aria-hidden="true" tabindex="-1"></a><span class="co"># Scenario A: both models judged against the same clinical risk thresholds.</span></span>
 <span id="cb245-726"><a href="#cb245-726" aria-hidden="true" tabindex="-1"></a><span class="co"># Set directories: keep these figures inside the chapter's output tree</span></span>
@@ -9331,7 +9331,7 @@ $ci
 <span id="cb245-730"><a href="#cb245-730" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb245-731"><a href="#cb245-731" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC</span></span>
 <span id="cb245-732"><a href="#cb245-732" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, </span>
-<span id="cb245-733"><a href="#cb245-733" aria-hidden="true" tabindex="-1"></a>               <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>), <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir)</span>
+<span id="cb245-733"><a href="#cb245-733" aria-hidden="true" tabindex="-1"></a>               <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"C5.0"</span>), <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> save_dir)</span>
 <span id="cb245-734"><a href="#cb245-734" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb245-735"><a href="#cb245-735" aria-hidden="true" tabindex="-1"></a><span class="co"># IDI</span></span>
 <span id="cb245-736"><a href="#cb245-736" aria-hidden="true" tabindex="-1"></a>idi <span class="ot">&lt;-</span> <span class="fu">PlotIDICurve</span>(true_labels, ref_prob, new_prob, <span class="at">positive =</span> positive, </span>
@@ -9384,9 +9384,9 @@ $ci
 <span id="cb245-783"><a href="#cb245-783" aria-hidden="true" tabindex="-1"></a>               <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"heatmap"</span>))</span>
 <span id="cb245-784"><a href="#cb245-784" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotIDICurve</span>(true_labels, ref_prob, new_prob, <span class="at">risk_thresholds =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>),<span class="at">positive =</span> positive,</span>
 <span id="cb245-785"><a href="#cb245-785" aria-hidden="true" tabindex="-1"></a>             <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"idi"</span>),<span class="at">conf_int =</span> T)</span>
-<span id="cb245-786"><a href="#cb245-786" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>), <span class="at">show_ci =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb245-786"><a href="#cb245-786" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotROCCompare</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"C5.0"</span>), <span class="at">show_ci =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb245-787"><a href="#cb245-787" aria-hidden="true" tabindex="-1"></a>               <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"roc"</span>))</span>
-<span id="cb245-788"><a href="#cb245-788" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotPredDist</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"nb"</span>),</span>
+<span id="cb245-788"><a href="#cb245-788" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotPredDist</span>(true_labels, ref_prob, new_prob, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"glm"</span>, <span class="st">"C5.0"</span>),</span>
 <span id="cb245-789"><a href="#cb245-789" aria-hidden="true" tabindex="-1"></a>             <span class="at">outcome_labels =</span> <span class="fu">levels</span>(true_labels), <span class="at">save_plot =</span> <span class="cn">TRUE</span>, <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"dist"</span>))</span>
 <span id="cb245-790"><a href="#cb245-790" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotThresholdNRI</span>(true_labels, ref_prob, new_prob, <span class="at">save_plot =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb245-791"><a href="#cb245-791" aria-hidden="true" tabindex="-1"></a>                  <span class="at">save_dir =</span> <span class="fu">file.path</span>(nri_dir, <span class="st">"threshold_scan"</span>))</span>
