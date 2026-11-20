@@ -119,6 +119,9 @@ jobs:
             "umap"
           ))
 
+          # Use the Bioconductor version matching this R installation.
+          Sys.setenv(R_BIOC_VERSION = as.character(BiocManager::version()))
+
           remotes::install_github(
             c(
               "mlr-org/mlr3extralearners",
