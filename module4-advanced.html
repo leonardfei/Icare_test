@@ -1025,14 +1025,11 @@ $ticks_digits
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ========== Calibration Metrics at t = 50 ==========
-** APPARENT (training-set) calibration -- interpret with caution **
-Calibration slope    (ideal 1): 2.9167
-Calibration intercept (ideal 0): -1.1597
-R-squared:                       0.8649
-Mean Absolute Error (MAE):       0.2516
-Integrated Calibration Index:    0.2073
-E50 (median abs error):          0.2691
-E90 (90th pct abs error):        0.4184
+  Bins (for plot): 10
+  Slope:           2.9167
+  Intercept:       -1.1597
+  R-squared:       0.8649
+  Smooth ICI:      NA
 ====================================================</code></pre>
 </div>
 <details class="code-fold">
@@ -1042,11 +1039,11 @@ E90 (90th pct abs error):        0.4184
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ========== Calibration Metrics at t = 50 ==========
-** TRAINING (apparent -- optimistic for flexible learners): **
-  Slope=2.9167 | Intercept=-1.1597 | R2=0.8649 | MAE=0.2516 | ICI=0.2073
-** VALIDATION (unbiased estimate): **
-  Slope=1.0508 | Intercept=0.1170 | R2=0.5182 | MAE=0.1509 | ICI=0.1498
-  Note: Training calibration is always expected to be more optimistic.
+  Shared bins (for plot): 10
+** TRAINING (apparent) **
+  Slope=2.9167 | Intercept=-1.1597 | ICI=NA
+** VALIDATION (unbiased) **
+  Slope=1.0508 | Intercept=0.1170 | ICI=NA
 =================================================================</code></pre>
 </div>
 <details class="code-fold">
